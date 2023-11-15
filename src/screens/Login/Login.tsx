@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image, Dimensions, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { useAuthContext } from '../../auth/authorization/AuthGuard';
 import { isPhoneNumber, isValidateEmail } from './Validations/Validate';
 import login from './services/login';
 import Navbar from '../../components/navbar/Navbar';
+import { ImageIndex } from '../../assets/AssestsIndex';
 
 export interface RIAuthGuard {
     children: React.ReactNode;
@@ -41,11 +42,35 @@ const Login = () => {
             <View>
                 <Navbar />
             </View>
-            <Text >Login</Text>
+            <View style={{ alignSelf: 'center', marginTop: '30%' }}>
+                <Image source={ImageIndex.User} style={styles.logoIcon} />
+            </View>
+            <View>
+                <View>
+                    <Text style={styles.InputText}>EmployeeId</Text>
+                    <TextInput></TextInput>
+                </View>
+                <View>
+                    <Text style={styles.InputText}>EmployeeId</Text>
+                    <TextInput></TextInput>
+                </View>
+            </View>
         </View>
     )
 }
 
 export default Login
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    logoIcon: {
+        width: Dimensions.get('window').height * 0.16,
+        height: Dimensions.get('window').height * 0.16,
+    },
+    InputText:{
+        width:84,
+        height:16,
+        fontWeight:'700',
+        fontSize:14,
+        lineHeight:16
+    }
+})
