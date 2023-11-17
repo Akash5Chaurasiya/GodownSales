@@ -19,6 +19,7 @@ export default function AuthGuard(props: RIAuthGuard) {
     const { children } = props;
     const [loading, setLoading] = useState(true);
     const [state, setState] = useState<Auth.LoginData | null>(null);
+    console.log(state);
     useLayoutEffect(() => {
         const initializeAuthData = async () => {
             try {
