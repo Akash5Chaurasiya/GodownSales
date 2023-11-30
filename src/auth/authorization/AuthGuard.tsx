@@ -3,6 +3,7 @@ import { createContext, useContext, useLayoutEffect, useState } from "react";
 import { Text } from "react-native";
 import Login from "../../screens/Login/Login";
 import RoleIndex from "./RoleIndex";
+import LoadingState from "../../components/LoadingState/LoadingState";
 export interface RIAuthGuard {
     children: React.ReactNode;
 }
@@ -19,11 +20,12 @@ export default function AuthGuard(props: RIAuthGuard) {
     const { children } = props;
     const [loading, setLoading] = useState(true);
     const [state, setState] = useState<Auth.LoginData | null>(null);
-    console.log(state);
+    console.log("state",state);
     useLayoutEffect(() => {
         const initializeAuthData = async () => {
             try {
                 const loginData = await AsyncStorage.getItem('auth');
+                console.log("loginData", loginData);
                 if (loginData) {
                     const loginDataParsed = JSON.parse(loginData) as Auth.LoginData;
                     setState(loginDataParsed);
@@ -45,7 +47,7 @@ export default function AuthGuard(props: RIAuthGuard) {
         setState(d);
     }
     if (loading) {
-        return <Text>Loading.....</Text>
+        return <LoadingState/>
     }
     const contextValue: AuthContextValue = {
         authData: state || {
