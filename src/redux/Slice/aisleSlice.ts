@@ -58,10 +58,10 @@ export const assignAlisleAsync:any = createAsyncThunk(
 )
 export const imageUploadAisleAsync:any = createAsyncThunk(
     "imageUploadAisleAsync",
-    async(datapassing)=>{
+    async(formData)=>{
         try{
-            console.log("seach---------. testing-------------",datapassing)
-            const response:any = await imageUploadAisle(datapassing) ;
+            console.log("upload testing------------",formData)
+            const response:any = await imageUploadAisle(formData) ;
             // console.log("ressssss", response)
             return response;
         }
@@ -74,7 +74,7 @@ export const addAisleImageAsync:any = createAsyncThunk(
     "addAisleImageAsync",
     async(datapassing)=>{
         try{
-            console.log("seach---------. testing-------------",datapassing)
+            console.log("addimageeee testing-------------",datapassing)
             const response:any = await addAisleImage(datapassing) ;
             // console.log("ressssss", response)
             return response;
@@ -121,7 +121,7 @@ export const AisleSlice = createSlice({
             state.status='loading'
         })
         .addCase(imageUploadAisleAsync.fulfilled,(state, action)=>{
-            state.status='fulfilled',
+            state.status='idle',
            state.upploadaisleImage = action.payload
            console.log("on assignslice", state.upploadaisleImage)
         })

@@ -22,6 +22,7 @@ import { getAllAlisleAsync } from '../../redux/Slice/aisleSlice';
 import { RadioButton } from 'react-native-paper';
 import SearchComponent from '../../components/searchBar/SearchBar';
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -300,7 +301,7 @@ const Assign = ({ navigation }: any) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{ width: '100%', }}>
+                        <SafeAreaView style={{ width: '100%', maxHeight:'90%' }}>
 
 
                             <FlatList
@@ -318,8 +319,8 @@ const Assign = ({ navigation }: any) => {
                                     </View>
                                 )}
                             />
-                        </View>
-                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', marginTop: '70%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3 }}>
+                        </SafeAreaView>
+                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3 ,marginTop:'50%'}}>
                             <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 20 }}>Done</Text></TouchableOpacity>
 
                     </View>

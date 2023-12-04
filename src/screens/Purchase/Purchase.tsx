@@ -20,61 +20,6 @@ const Purchase = ({navigation}:any) => {
 const purchaseList = useSelector((state:any)=>state.purchase.purchaseSlip)
 console.log("----------------------------editititi", purchaseList)
 
-  const dummyData = [
-    {
-      productName: 'Product 1',
-      productNumber: 'P001',
-      status: 'Pending',
-      dateTime: '2023-11-28T14:00:00', // Using ISO 8601 format for date and time
-      qrCodeImage: 'https://example.com/qrcode1.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-    {
-      productName: 'Product 2',
-      productNumber: 'P002',
-      status: 'Shipped',
-      dateTime: '2023-11-29T15:30:00',
-      qrCodeImage: 'https://example.com/qrcode2.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-    {
-      productName: 'Product 3',
-      productNumber: 'P003',
-      status: 'Delivered',
-      dateTime: '2023-11-30T12:45:00',
-      qrCodeImage: 'https://example.com/qrcode3.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-    {
-      productName: 'Product 4',
-      productNumber: 'P004',
-      status: 'Pending',
-      dateTime: '2023-12-01T16:00:00',
-      qrCodeImage: 'https://example.com/qrcode4.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-    {
-      productName: 'Product 5',
-      productNumber: 'P005',
-      status: 'Shipped',
-      dateTime: '2023-12-02T14:20:00',
-      qrCodeImage: 'https://example.com/qrcode5.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-    {
-      productName: 'Product 6',
-      productNumber: 'P006',
-      status: 'Delivered',
-      dateTime: '2023-12-03T18:30:00',
-      qrCodeImage: 'https://example.com/qrcode6.png',
-      photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    },
-
-  ];
-
-
-
-
 
 
   return (
@@ -83,14 +28,14 @@ console.log("----------------------------editititi", purchaseList)
       <Navbar />
       <View>
         <Text className='text-center text-xl font-extrabold m-5 text-black'>Choose Purchaser Number</Text>
-        <View style={{ marginHorizontal: '4%', flexDirection:'row', justifyContent:'space-evenly'}}>
+        <View style={{ marginHorizontal: '4%', flexDirection:'row', justifyContent:'space-evenly', alignItems:'center'}}>
           <SearchComponent />
           <TouchableOpacity onPress={()=>navigation.navigate("PurchaseCamera")}>
           <Feather
         name="camera"
         size={25}
         color={'black'}
-        style={{ textAlignVertical:'center', alignItems:'center'}}
+        style={{ textAlignVertical:'center', alignItems:'center', }}
       /></TouchableOpacity>
 
         </View>

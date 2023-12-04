@@ -45,9 +45,13 @@ export const assignAisle = async(datapassing:any)=>{
 
 export const imageUploadAisle = async(filesPassing:any)=>{
     try{ 
-        const {data} = await axios.post(`${uploadAisleApiPath}`,{image:filesPassing},
+        const {data} = await axios.post(`${uploadAisleApiPath}`,filesPassing,
         {
-            withCredentials:true
+            withCredentials:true,
+            headers:{
+                'Content-Type':'multipart/form-data',
+
+            }
         })
         console.log("data-----------------------------", data)
         return data
@@ -60,7 +64,8 @@ export const imageUploadAisle = async(filesPassing:any)=>{
 
 export const addAisleImage = async(datapassing:any)=>{
     try{ 
-        const {data} = await axios.post(`${assignAisleApiPath}/${datapassing.aisleId}`,{ image: datapassing.imageUrl, reason:datapassing.reason, addedBy:datapassing.userID, aisleCode:datapassing.aisleCode},
+        const {data} = await axios.post(`${assignAisleApiPath}/${datapassing.aisleId}`,
+        { image: datapassing.imageUrl, reason:datapassing.reason, addedBy:datapassing.userID, aisleCode:datapassing.aisleCode},
         {
             withCredentials:true
         })

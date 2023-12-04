@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image,TouchableOpacity } from 'react-native'
 import React from 'react'
 export interface RTListItem {
-  photo: any, dateTime: any, productName: any, status: any, productNumber: any, qrCode: any
+  photo: any, dateTime: any,  status: any, productNumber: any, qrCode: any
 }
 
 export default function FlatlistComp(props: RTListItem) {

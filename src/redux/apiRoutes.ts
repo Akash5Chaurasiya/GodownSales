@@ -13,8 +13,8 @@ export const purchaserSlipApiPath= `${basePath}/purchaser/pages/purchaseBill/`;
 
 //added 
 
-export const uploadAisleApiPath = `${basePath}/imageService/upload`;
-export const addImageAisleApiPath = `${basePath}/store/aisle/addImage`;
+export const uploadAisleApiPath = `${basePath}/imageService/upload`; // 1st 
+export const addImageAisleApiPath = `${basePath}/store/aisle/addImage`;// second 
 
 export const purchaseQrScanApiPath = `${basePath}/purchaser/pages/purchaseBill/scanQr`;
 

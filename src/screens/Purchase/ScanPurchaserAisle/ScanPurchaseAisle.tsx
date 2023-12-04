@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, StatusBar, Alert, BackHandler, TouchableOpacity, Text, Vibration } from 'react-native';
 import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
@@ -8,10 +7,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import { widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 import { useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-
+import {scanAlisleAsync} from '../../../redux/Slice/aisleSlice'
 import { useAuthContext } from '../../../auth/authorization/AuthGuard';
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
-import { purchaseQrScanAsync } from '../../../redux/Slice/purchaseSlice';
 
 interface CamProps {
   navigation: any;
@@ -20,12 +18,23 @@ interface CamProps {
 }
 
 
-const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
+const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
   const devices = useCameraDevices();
   const device = devices.back;
   const [torchOn, setTorchOn] = useState(false);
   const [isFocused, setIsFocused] = useState(true); 
+  // const route: any = useRoute();
+  // const id:any = route.params
+//   const { aisleId, aisleCode, shelfCode } = route.params;
+  const { authData}:any = useAuthContext();
+//   const userID = authData.userId
+//   const a = aisleCode
+//   const b = shelfCode
+//   console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa", a, b)
+
+//   console.log("userId", authData.userId)
  
+//   console.log("idd on scan page",aisleId, aisleCode, shelfCode, )
 
   const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.ALL_FORMATS]);
   const [barcode, setBarcode] = useState<string>(''); // Provide a default value of an empty string
@@ -45,7 +54,9 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
     setHasPermission(status === 'authorized');
   };
 
- 
+//  const successcoming = useSelector((state: any) => state.aisle.assignaisle)
+
+// console.log("successs", successcoming.status)
   const toggleActiveState = async () => {
     if (barcodes && barcodes.length > 0 && !isScanned) {
       try {
@@ -55,39 +66,34 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
         for (const scannedBarcode of barcodes) {
           if (scannedBarcode.rawValue && scannedBarcode.rawValue !== '') {
             const datascan = scannedBarcode.rawValue;
-            console.log("---------------------------------------neww",datascan);
-            setBarcode(datascan);
-            console.log(scannedBarcode.rawValue);
+            console.log("---------------------------------------",datascan);
+            setBarcode(scannedBarcode.rawValue);
+            console.log("scanedded data",scannedBarcode.rawValue, datascan);
            
-            if(datascan){
-              const datasplit = datascan.replace(/s\//g, '').replace(/"/g, '');
-              console.log("scccc----------------------------------------------------------------", datasplit)
-              const akaka = {"data":datasplit}
-              dispatch(purchaseQrScanAsync(akaka)).then((res:any)=>{
-                console.log("------------", res.payload)
-                if(res.payload.status){
-                  Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: "Success",
-                    textBody: 'Successfully barcode scan',
-                  })
-                  navigation.navigate('PurchasePage')
 
-                }
-                else{
-                  // Alert.alert("check your barcode !!")
-                  // cons
-  
-                  Toast.show({
-                    type: ALERT_TYPE.DANGER,
-                    title: "Error",
-                    textBody: res.payload.message,
-                  })
-                  navigation.navigate('Purchase')
-                }
-              })
-            }
-           
+            // const datapassing = { aisleId, datascan,userID }
+            // console.log("---------------------->", datapassing)
+            dispatch(scanAlisleAsync(datascan)).then((res:any)=>{
+              if(res.payload.status){
+               Dialog.show({
+                  type: ALERT_TYPE.SUCCESS,
+                  title: "Success",
+                  textBody: 'Qr assign Successfully"',
+                })
+                navigation.navigate('PurchaseConfirmAisle')
+              }
+              else{
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  title: "Error",
+                  textBody: res.payload.message,
+                })
+                navigation.navigate('PurchasePage')
+    
+              }
+            })
+
+          
             
           }
         }
@@ -95,7 +101,7 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
       } catch (error) {
 
         console.error(error);
-        navigation.navigate("assign");
+        navigation.navigate("Purchase");
         Alert.alert('An unexpected error occurred. Please try again later.');
       }
     }
@@ -104,6 +110,7 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
 
   useEffect(() => {
     toggleActiveState();
+    
   }, [barcodes]);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
@@ -115,7 +122,7 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
   }, []);
   
   const handleBackButton = () => {
-    navigation.navigate("Purchase");
+    navigation.navigate("assign");
     return true;
   };
 // console.log("haspesmm", hasPermission)
@@ -152,7 +159,6 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
           audio={false}
           enableZoomGesture
         />
-       
 
 
       
@@ -173,7 +179,7 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
   );
 }
 
-export default PurchaseCamera
+export default ScanPurchaseAisle
 
 const styles = StyleSheet.create({
   rnholeView: {

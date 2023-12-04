@@ -18,6 +18,9 @@ import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-a
 import Purchase from './src/screens/Purchase/Purchase.tsx'
 import PurchaseCamera from './src/screens/Purchase/PurchaseCamera/PurchaseCamera.tsx'
 import PurchasePage from './src/screens/Purchase/PurchasePage/PurchasePage.tsx'
+import ScanPurchase from './src/screens/Purchase/ScanPurchaserAisle/ScanPurchaseAisle.tsx'
+import ScanPurchaseAisle from './src/screens/Purchase/ScanPurchaserAisle/ScanPurchaseAisle.tsx'
+import PurchaseConfirmAisle from './src/screens/Purchase/PurchaseConfirmAisle/PurchaseConfirmAisle.tsx'
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 const App = () => {
@@ -59,6 +62,20 @@ const App = () => {
           name="PurchasePage"
           component={PurchasePage}
         />
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="ScanPurchaseAisle"
+          component={ScanPurchaseAisle}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="PurchaseConfirmAisle"
+          component={PurchaseConfirmAisle}
+        />
 
       </Stack.Navigator>
     )
@@ -66,7 +83,7 @@ const App = () => {
   const ConfirmAisleQr = lazy(()=>import('./src/screens/AssignQr/ConfirmAisleQr/ConfirmAisleQr.tsx') )
   const AssignComp = () => {
     return (
-      <Stack.Navigator initialRouteName='Assign'>
+      <Stack.Navigator initialRouteName='assign'>
         <Stack.Screen
           options={{
             headerShown: false,

@@ -60,7 +60,7 @@ export const PurchaseSlice =  createSlice({
         })
         .addCase(purchaseQrScanAsync.fulfilled, (state,action)=>{
             state.status ='idle',
-            state.purchaseQrScanData= action.payload
+            state.purchaseQrScanData= action.payload.data
             console.log("--------------------------post scaan", state.purchaseQrScanData)
         })
        
