@@ -1,21 +1,19 @@
 import { StyleSheet, Text, View, Linking, Image, TouchableOpacity, Alert, TextInput } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
-import { Camera, useCameraDevices } from 'react-native-vision-camera';
-import { useRoute } from '@react-navigation/native';
-import Feather from 'react-native-vector-icons/Feather';
-import { useDispatch, useSelector } from 'react-redux';
-import { imageUploadAisleAsync, addAisleImageAsync } from '../../../redux/Slice/aisleSlice';
-import { useAuthContext } from '../../../auth/authorization/AuthGuard';
+import React, {useState, useEffect, useRef} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useAuthContext } from '../../auth/authorization/AuthGuard'
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
-const AssignAisleCamera = ({ navigation, route }: any) => {
-  // const route: any = useRoute();
-  const { authData }: any = useAuthContext();
-  const userID = authData.userId
-  const dispatch = useDispatch();
-  const { data, aisleCode, shelfCode } = route.params
-  const imageData = data
+import { addAisleImageAsync, imageUploadAisleAsync } from '../../redux/Slice/aisleSlice';
+import { Camera , useCameraDevices} from 'react-native-vision-camera';
+import Feather from 'react-native-vector-icons/Feather';
 
-  console.log("coming imagedata", data, aisleCode, shelfCode,)
+
+const AislePhotoPage = ({navigation}:any) => {
+    const { authData }: any = useAuthContext();
+  const userID = authData.userId
+
+  const dispatch = useDispatch();
+
   const camera = useRef(null);
 
   const devices = useCameraDevices();
@@ -29,6 +27,8 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   const imageString1= useSelector((state: any) => state.aisle.upploadaisleImage)
   const imageString = imageString1[0];
   console.log("checkkkkeckkeckk", imageString)
+  const aisleCodeData = useSelector((state:any)=> state.aisle.scanaisle)
+      const aisleCode = aisleCodeData.aisleCode;
 
   useEffect(() => {
     async function getPermission() {
@@ -77,7 +77,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
-              textBody: 'please write reason and try again',
+              textBody: 'Are you sure :)if yess, confirm again',
             })
 
             if (imageString) {
@@ -91,7 +91,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
                     title: "Success",
                     textBody: 'Successfully Upload Image',
                   })
-                  navigation.navigate('ConfirmAisleQr', { ImageSource, imageData, aisleCode, shelfCode });
+                  navigation.navigate('Sales');
 
                 }
                 else {
@@ -101,7 +101,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
                     title: "Error",
                     textBody: res.payload.message,
                   })
-                  // navigation.navigate('assign')
+                  navigation.navigate('Sales');
                 }
               })
 
@@ -114,6 +114,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
               title: "warn",
               textBody: "Upload failed. Response payload is empty",
             })
+
           }
 
         })
@@ -132,117 +133,115 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   };
 
   if (!device) {
-    console.error('Camera device not available.');
+    // console.error('Camera device not available.');
     return null; // or handle the error accordingly
   }
   // console.log('Camera device:---------------------------', device);
   console.log("ImageSource is hhherer-----------------", `file://${ImageSource}`)
   return (
     <View style={{ flex: 1 }}>
-      {showPhoto && ImageSource && <Image source={{ uri: `file://${ImageSource}` }} style={{ width: '80%', height: '70%', margin: '10%', borderRadius: 5, borderWidth: 4, borderColor: 'white', }} />}
-      {!showPhoto && (
-        <Camera
-          ref={camera}
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={showCamera}
-          photo={true}
+    {showPhoto && ImageSource && <Image source={{ uri: `file://${ImageSource}` }} style={{ width: '80%', height: '70%', margin: '10%', borderRadius: 5, borderWidth: 4, borderColor: 'white', }} />}
+    {!showPhoto && (
+      <Camera
+        ref={camera}
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={showCamera}
+        photo={true}
+      />
+    )}
+    {!showPhoto && (
+      <View style={styles.confirmButtonContainer}>
+        <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
+          <Text style={styles.confirmButtonText}>Capture Photo</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+    {showPhoto && (
+      <View style={styles.confirmButtonContainer}>
+        <TextInput
+          style={{
+            borderColor: 'gray',
+            borderRadius: 8,
+            borderWidth: 1, width: '70%', color: 'black', margin: '3%',
+          }}
+          placeholder="Enter Reason"
+          value={text}
+          onChangeText={(text) => setText(text)}
+
+
+
         />
-      )}
-      {!showPhoto && (
-        <View style={styles.confirmButtonContainer}>
-          <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
-            <Text style={styles.confirmButtonText}>Capture Photo</Text>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            onPress={handleRetake}
+            style={styles.confirmRButton}
+          >
+            <Text style={{ ...styles.confirmRButtonText, }}>Retake</Text>
+            <Feather
+              name="repeat"
+              size={18}
+              color={'#005D7F'}
+              style={{ marginLeft: '2%' }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={{ ...styles.confirmButton, }}
+          >
+            <Text style={styles.confirmButtonText}>Confirm </Text>
           </TouchableOpacity>
         </View>
-      )}
-      {showPhoto && (
-        <View style={styles.confirmButtonContainer}>
-          <TextInput
-            style={{
-              borderColor: 'gray',
-              borderRadius: 8,
-              borderWidth: 1, width: '70%', color: 'black', margin: '3%',
-            }}
-            placeholder="Enter Reason"
-            value={text}
-            onChangeText={(text) => setText(text)}
-
-
-
-          />
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              onPress={handleRetake}
-              style={styles.confirmRButton}
-            >
-              <Text style={{ ...styles.confirmRButtonText, }}>Retake</Text>
-              <Feather
-                name="repeat"
-                size={18}
-                color={'#005D7F'}
-                style={{ marginLeft: '2%' }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleConfirm}
-              style={{ ...styles.confirmButton, }}
-            >
-              <Text style={styles.confirmButtonText}>Confirm </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
+      </View>
+    )}
+  </View>
   )
 }
 
-
-
-export default AssignAisleCamera
+export default AislePhotoPage
 
 const styles = StyleSheet.create({
-  confirmButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 20,
-
-
-  },
-  confirmRButton: {
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 5,
-    marginHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  confirmButton: {
-    backgroundColor: '#005D7F',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  confirmButtonText: {
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18,
-  },
-  confirmRButtonText: {
-    fontWeight: '600',
-    fontSize: 18,
-    color: '#005D7F',
-    textAlign: 'center',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-
-  },
-})
+    confirmButtonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingBottom: 20,
+  
+  
+    },
+    confirmRButton: {
+      backgroundColor: 'white',
+      paddingHorizontal: 15,
+      paddingVertical: 15,
+      borderRadius: 5,
+      marginHorizontal: 10,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    confirmButton: {
+      backgroundColor: '#005D7F',
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      borderRadius: 5,
+      marginHorizontal: 10,
+    },
+    confirmButtonText: {
+      fontWeight: '600',
+      color: 'white',
+      textAlign: 'center',
+      fontSize: 18,
+    },
+    confirmRButtonText: {
+      fontWeight: '600',
+      fontSize: 18,
+      color: '#005D7F',
+      textAlign: 'center',
+    },
+    buttonRow: {
+      flexDirection: 'row',
+  
+    },
+  })

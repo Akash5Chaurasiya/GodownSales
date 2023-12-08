@@ -1,16 +1,13 @@
 import { StyleSheet, Text, View, FlatList, SafeAreaView, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import { SearchBar } from 'react-native-screens'
-import SearchComponent from '../../components/searchBar/SearchBar'
 import FlatlistComp from '../../components/FlatlistComp/FlatlistComp'
 import Feather from 'react-native-vector-icons/Feather';
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllPurchaseSlipAsync } from '../../redux/Slice/purchaseSlice'
 import { RadioButton } from 'react-native-paper';
+import { getAllSalesSlipAsync } from '../../redux/Slice/sales';
 
-
-const Purchase = ({ navigation }: any) => {
+const Sales = ({navigation}:any) => {
   const dispatch = useDispatch();
   const [selected, setSelected] = React.useState(false);
   const [show, setShow] = useState(false);
@@ -24,59 +21,52 @@ const Purchase = ({ navigation }: any) => {
   const photo = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
 
   useEffect(() => {
-    dispatch(getAllPurchaseSlipAsync());
+    dispatch(getAllSalesSlipAsync());
   }, [])
 
-  const purchaseList = useSelector((state: any) => state.purchase.purchaseSlip)
-  console.log("----------------------------editititi", purchaseList)
+  const salesList = useSelector((state:any)=>state.sales.salesSlip)
+  console.log("----------------------", salesList)
 
-  const purchaseNumbers: any = [];
+  const salesNumbers : any=[];
+  salesList?.forEach((sales:any , index:any)=>{
+    const salesNumber = sales.salesOrder;
+    salesNumbers.push({salesNumber});
+  })
+console.log("salesnummm", salesNumbers)
 
-  purchaseList?.forEach((purchase: any, index: any) => {
-    // Assuming "purchaseOrder" is the purchase nuer
-    const purchaseNumber = purchase.purchaseOrder[0];
-    console.log("mmmmmmmm", purchaseNumber)
-    purchaseNumbers.push({ purchaseNumber });
-  });
 
-  console.log('Purchase Numbers:', purchaseNumbers);
-  console.log('textttt---------------------------->', text, show);
   const handleSubmit = () => {
     setShow(false);
     setText('');
   };
 
   const textstring = text?.toString();
-  console.log("textstring", textstring)
-  const searchres = purchaseNumbers?.filter((purchaser: any) => {
-    const includesText = purchaser?.purchaseNumber?.includes(textstring);
-    console.log('Includes Text:', includesText);
+  const searchres = salesNumbers?.filter((sales: any) => {
+    const includesText = sales.salesNumber.includes(textstring);
+  
     return includesText;
   });
+
   console.log("search res", searchres)
   const handleSelectRadio = (name: any) => {
     console.log("name", name)
     setSelectedItem(name);
     setShow(false)
   };
-  console.log("radio btn", selectedItem)
+  console.log("selected from opt on sales", selectedItem)
 
-  console.log("searchres--------------->today", searchres)
-
-  const filteredData = purchaseList?.filter((purchase: any) => {
+  const filteredData = salesList?.filter((sales: any) => {
     // Check if the purchaseOrder array includes the selected item
-    return purchase.purchaseOrder.includes(selectedItem);
+    return sales?.salesOrder?.includes(selectedItem);
   });
-  const dataList = selectedItem && text ? filteredData : purchaseList;
+  const dataList = selectedItem && text ? filteredData : salesList;
   console.log("Filtered Data:", filteredData);
-
-
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
 
       <Navbar />
       <View>
-        <Text className='text-center text-xl font-extrabold m-5 text-black'>Choose Purchaser Number</Text>
+        <Text className='text-center text-xl font-extrabold m-5 text-black'>Choose Sales Number</Text>
         <View style={{ marginHorizontal: '4%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
           {/* <SearchComponent /> */}
           <View
@@ -112,6 +102,7 @@ const Purchase = ({ navigation }: any) => {
               <TouchableOpacity
                 onPress={() => {
                   setText('');
+
                 }}
               >
                 <Feather
@@ -134,11 +125,11 @@ const Purchase = ({ navigation }: any) => {
                         <Text style={{
                           fontFamily: 'Inter-SemiBold',
                           color: 'black',
-                        }}>{item.purchaseNumber}</Text>
+                        }}>{item.salesNumber}</Text>
                         <RadioButton.Android
-                          value={item.purchaseNumber}
-                          status={selectedItem === item.purchaseNumber ? 'checked' : 'unchecked'}
-                          onPress={() => handleSelectRadio(item.purchaseNumber)}
+                          value={item.salesNumber}
+                          status={selectedItem === item.salesNumber ? 'checked' : 'unchecked'}
+                          onPress={() => handleSelectRadio(item.salesNumber)}
                         />
                       </View>
                     )}
@@ -151,7 +142,7 @@ const Purchase = ({ navigation }: any) => {
 
           </View>
 
-          <TouchableOpacity onPress={() => navigation.navigate("PurchaseCamera")}>
+          <TouchableOpacity onPress={() => navigation.navigate("SalesScanQr")}>
             <Feather
               name="camera"
               size={25}
@@ -176,7 +167,7 @@ const Purchase = ({ navigation }: any) => {
 
                 dateTime={item.createdAt}
                 status={item.status}
-                productNumber={item.purchaseOrder}
+                productNumber={item.salesOrder}
               // productName={item.productName}
 
               />
@@ -192,7 +183,7 @@ const Purchase = ({ navigation }: any) => {
   )
 }
 
-export default Purchase
+export default Sales
 
 const styles = StyleSheet.create({
   searchBarContainer: {
@@ -248,3 +239,5 @@ const styles = StyleSheet.create({
   },
 
 })
+
+

@@ -9,10 +9,13 @@ import {
   FlatList,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { RadioButton } from 'react-native-paper';
+import { getAllPurchaseSlipAsync } from '../../redux/Slice/purchaseSlice';
 
 const SearchComponent = ({ }: any) => {
+  const dispatch = useDispatch();
   const [selected, setSelected] = React.useState(false);
   const [show, setShow] = useState(true);
   const [text, setText] = React.useState<string | undefined>();
@@ -20,6 +23,27 @@ const SearchComponent = ({ }: any) => {
   useEffect(() => {
     setShow(true);
   }, []);
+
+  
+  useEffect(()=>{
+    dispatch(getAllPurchaseSlipAsync());
+
+ },[])
+
+const purchaseList = useSelector((state:any)=>state.purchase.purchaseSlip)
+console.log("----------------------------=on search ", purchaseList)
+
+
+const purchaseNumbers:any= [];
+
+purchaseList?.forEach((purchase:any, index:any) => {
+  // Assuming "purchaseOrder" is the purchase nuer
+  const purchaseNumber = purchase.purchaseOrder[0];
+  console.log("mmmmmmmm", purchaseNumber)
+  purchaseNumbers.push({  purchaseNumber });
+});
+
+console.log('Purchase Numbers:', purchaseNumbers);
 
   console.log('textttt---------------------------->', text, show);
   const handleSubmit = () => {
@@ -52,12 +76,12 @@ const SearchComponent = ({ }: any) => {
   ];
   const textstring = text?.toString();
 
-  const searchres = purchaserNumber.filter((purchaser: any) => {
-    const includesText = purchaser.item.includes(textstring);
+  const searchres = purchaseNumbers.filter((purchaser: any) => {
+    const includesText = purchaser.purchaseNumber.includes(textstring);
     console.log('Includes Text:', includesText);
     return includesText;
   });
-
+console.log("search res", searchres)
   const handleSelectRadio = (name: any) => {
     setSelectedItem(name);
   };
@@ -118,7 +142,7 @@ const SearchComponent = ({ }: any) => {
                   <Text style={{
                     fontFamily: 'Inter-SemiBold',
                     color: 'black',
-                  }}>{item.item}</Text>
+                  }}>{item.purchaseNumber}</Text>
                   <RadioButton.Android
                     value={item.item}
                     status={selectedItem === item.item ? 'checked' : 'unchecked'} 

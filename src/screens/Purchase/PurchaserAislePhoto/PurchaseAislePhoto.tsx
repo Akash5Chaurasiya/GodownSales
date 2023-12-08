@@ -1,21 +1,21 @@
+
+
 import { StyleSheet, Text, View, Linking, Image, TouchableOpacity, Alert, TextInput } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import { useRoute } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useDispatch, useSelector } from 'react-redux';
-import { imageUploadAisleAsync, addAisleImageAsync } from '../../../redux/Slice/aisleSlice';
+import { imageUploadAisleAsync, addAisleImageAsync, scanAlisleAsync } from '../../../redux/Slice/aisleSlice';
 import { useAuthContext } from '../../../auth/authorization/AuthGuard';
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
-const AssignAisleCamera = ({ navigation, route }: any) => {
+const PurchaseAislePhoto= ({ navigation, route }: any) => {
   // const route: any = useRoute();
   const { authData }: any = useAuthContext();
   const userID = authData.userId
-  const dispatch = useDispatch();
-  const { data, aisleCode, shelfCode } = route.params
-  const imageData = data
 
-  console.log("coming imagedata", data, aisleCode, shelfCode,)
+  const dispatch = useDispatch();
+
   const camera = useRef(null);
 
   const devices = useCameraDevices();
@@ -29,6 +29,8 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   const imageString1= useSelector((state: any) => state.aisle.upploadaisleImage)
   const imageString = imageString1[0];
   console.log("checkkkkeckkeckk", imageString)
+  const aisleCodeData = useSelector((state:any)=> state.aisle.scanaisle)
+      const aisleCode = aisleCodeData.aisleCode;
 
   useEffect(() => {
     async function getPermission() {
@@ -91,7 +93,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
                     title: "Success",
                     textBody: 'Successfully Upload Image',
                   })
-                  navigation.navigate('ConfirmAisleQr', { ImageSource, imageData, aisleCode, shelfCode });
+                  navigation.navigate('Purchase');
 
                 }
                 else {
@@ -101,7 +103,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
                     title: "Error",
                     textBody: res.payload.message,
                   })
-                  // navigation.navigate('assign')
+                  navigation.navigate('Purchase');
                 }
               })
 
@@ -114,6 +116,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
               title: "warn",
               textBody: "Upload failed. Response payload is empty",
             })
+
           }
 
         })
@@ -132,7 +135,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   };
 
   if (!device) {
-    console.error('Camera device not available.');
+    // console.error('Camera device not available.');
     return null; // or handle the error accordingly
   }
   // console.log('Camera device:---------------------------', device);
@@ -199,7 +202,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
 
 
 
-export default AssignAisleCamera
+export default PurchaseAislePhoto
 
 const styles = StyleSheet.create({
   confirmButtonContainer: {

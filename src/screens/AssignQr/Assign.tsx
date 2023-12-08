@@ -40,13 +40,15 @@ const Assign = ({ navigation }: any) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedItemShelf, setSelectedItemShelf] = useState(null);
     const [loading, setLoading] = useState(false);
-
-
-    console.log("selected item------------------------------------ ", selectedItem)
+    const [selected, setSelected] = React.useState(false);
+    const [text, setText] = React.useState<string>('');
+    const [show, setShow] = useState(true);
+    console.log("TEXT, SHOW", text, show)
 
     useEffect(() => {
+        setShow(true);
         dispatch(getAllShelfAsync());
-        // dispatch(getAllAlisleAsync("shelf1"))
+
 
     }, []);
     const suggestions = useSelector((state: any) => state.shelf.allslices)
@@ -55,38 +57,24 @@ const Assign = ({ navigation }: any) => {
         shelfCode: item.shelfCode,
     }));
 
+    const handleSubmit = () => {
+        setShow(false);
+        setText('');
+    };
     const filteredSuggestions = shelfData?.filter((suggestion: any) =>
-        suggestion.shelfName.toLowerCase().includes(searchQuery.toLowerCase())
+        suggestion.shelfName.toLowerCase().includes(text.toLowerCase())
     );
 
     const filteredShelfCodes = filteredSuggestions?.map((suggestion: any) => ({
         shelfName: suggestion.shelfName,
         shelfCode: suggestion.shelfCode,
     }));
-
+    console.log("filteredShelfCodes--------------------------", filteredShelfCodes)
     const initialCheckedState: any = {};
     filteredSuggestions?.forEach((suggestion: any) => {
         initialCheckedState[suggestion.shelfName] = false;
     });
 
-    const handleCheckboxToggle = (shelfName: string, shelfCode: string) => {
-        setCheckedItems((prevCheckedItems: any) => {
-
-            const newCheckedItems = { ...prevCheckedItems };
-            newCheckedItems[shelfName] = !newCheckedItems[shelfName];
-
-            console.log('Updated Checked Items:', newCheckedItems);
-
-            return newCheckedItems;
-        });
-    };
-    // console.log("checkedite----------------", checkedItems)
-    // const checkedItemsArray = Object.entries(selectedItemShelf)
-    // .filter((shelfName) => isChecked)
-    // .map(([shelfName, _]) => ({
-    //     shelfName,
-    //     shelfCode: shelfData.find((item:any) => item.shelfName === shelfName)?.shelfCode || '',
-    // }));
     const checkedItemsArray = selectedItemShelf
         ? [
             {
@@ -96,9 +84,6 @@ const Assign = ({ navigation }: any) => {
         ]
         : [];
     const handleDeleteItem = (shelfName: string) => {
-        // Remove the item from your data source
-        // const updatedCheckedItems = { ...checkedItems };
-        // delete updatedCheckedItems[shelfName];
         setCheckedItems(null);
         setSelectedItemShelf(null);
 
@@ -113,12 +98,12 @@ const Assign = ({ navigation }: any) => {
 
     const suggestionAisle = useSelector((state: any) => state.aisle.allaisle)
     const aisleName = suggestionAisle?.map((item: any) => item.aisleName)
-    console.log("aisleData--------------------------------------- ", suggestionAisle)
+    // console.log("aisleData--------------------------------------- ", suggestionAisle)
     let aisleId: any;
     let aisleCode: any, shelfCode: any;
     const findAisleDetails = (aisleName: any) => {
         const selectedAisle = suggestionAisle?.find((aisle: any) => aisle.aisleName === aisleName);
-        console.log("data of particular asile ------------------------------------------>", selectedAisle)
+        // console.log("data of particular asile ------------------------------------------>", selectedAisle)
 
         if (selectedAisle) {
             aisleId = selectedAisle._id;
@@ -138,8 +123,9 @@ const Assign = ({ navigation }: any) => {
     };
     const handleSelectShelf = (name: any) => {
         setSelectedItemShelf(name);
-        setIsSearchActive(false)
-        setSearchQuery('');
+        // setIsSearchActive(false)
+        // setSearchQuery('');
+        // setShow(false)
 
     };
     const hideModal = () => {
@@ -161,7 +147,16 @@ const Assign = ({ navigation }: any) => {
                 <View style={{ flex: 1, alignItems: 'center', }}>
 
                     <View style={styles.view1}>
-                        <View style={styles.searchBarContainer}>
+
+                        <View
+                            style={[
+                                styles.container,
+                                {
+                                    backgroundColor: selected ? '#fff' : '',
+                                    elevation: selected ? 2 : 0,
+                                },
+                            ]}
+                        >
                             <Feather
                                 name="search"
                                 size={18}
@@ -169,56 +164,61 @@ const Assign = ({ navigation }: any) => {
                                 style={styles.searchIcon}
                             />
                             <TextInput
-                                style={styles.searchInput}
-                                placeholder="Search "
+                                placeholder="Search..."
+                                onFocus={() => setSelected(true)}
+                                onBlur={() => setSelected(false)}
                                 onChangeText={text => {
-                                    setSearchQuery(text), setIsSearchActive(true); setSelectedItemShelf(null)
+                                    console.log('text---------------', text);
+                                    setText(text);
                                 }}
-                                value={searchQuery}
-                                placeholderTextColor="gray"
+                                className="text-base text-slate-700"
+                                placeholderTextColor={'#64748B'}
+                                style={styles.input}
+                                onSubmitEditing={handleSubmit}
                             />
-                            {/* {isSearchActive ? <ActivityIndicator size='small' color='blue' style={{ marginRight: '4%' }} /> :  */}
-                            <TouchableOpacity onPress={handleCrossIconPress}>
-                                <Feather
-                                    name="x"
-                                    size={18}
-                                    color={'black'}
-                                    style={styles.searchIcon}
-                                />
-                            </TouchableOpacity>
-                            {/* } */}
+                            {text && (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setText('');
 
-                        </View>
-                        {/* <SearchComponent
-          setSearchQuery={setSearchQuery}
-          handleCrossIconPress={handleCrossIconPress}
-          onPress ={()=>setSearching(false)}
+                                    }}
+                                >
+                                    <Feather
+                                        name="x"
+                                        size={18}
+                                        color={'black'}
+                                        style={styles.searchIcon}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            {text && show && (
+                                <View style={styles.searchAssistContainer}>
+                                    <ScrollView style={{ flex: 1  }}>
+                                        <SafeAreaView>
+                                        <FlatList
+                                            // style={{ maxHeight: 250 }}
 
-        /> */}
-
-                        {isSearchActive && filteredShelfCodes?.length > 0 && (
-                            <ScrollView style={styles.suggestionsContainer}>
-                                {filteredShelfCodes.map((suggestion: any, index: any) => (
-                                    <View key={index} style={styles.suggestionItem}>
-                                        <Text>{suggestion.shelfName}</Text>
-                                        {/* <Checkbox.Android
-                                    status={
-                                        checkedItems[suggestion.shelfName] ? 'checked' : 'unchecked'
-                                    }
-                                    onPress={() => handleCheckboxToggle(suggestion.shelfName, suggestion.shelfCode)}
-                                /> */}
-                                        <RadioButton.Android
-                                            value={suggestion.shelfName}
-                                            status={selectedItemShelf === suggestion.shelfName ? 'checked' : 'unchecked'} // Check or uncheck the RadioButton based on the selectedItem
-                                            onPress={() => handleSelectShelf(suggestion.shelfName)} // Handle selection
-                                            style={{}}
+                                            data={filteredShelfCodes}
+                                            keyExtractor={(item, index) => index.toString()} // Set a unique key for each item
+                                            renderItem={({ item }) => (
+                                                <View style={styles.listItem}>
+                                                    <Text style={{
+                                                        fontFamily: 'Inter-SemiBold',
+                                                        color: 'black',
+                                                    }}>{item.shelfName}</Text>
+                                                    <RadioButton.Android
+                                                        value={item.shelfName}
+                                                        status={selectedItemShelf === item.shelfName ? 'checked' : 'unchecked'}
+                                                        onPress={() => handleSelectShelf(item.shelfName)}
+                                                    />
+                                                </View>
+                                            )}
                                         />
-                                    </View>
-                                ))}
-                            </ScrollView>
-                        )}
-
-
+                                        </SafeAreaView>
+                                    </ScrollView>
+                                </View>
+                            )}
+                        </View>
 
                         <View style={{ flexDirection: 'column', marginTop: 10 }}>
                             <Text style={{ color: '#005D7F', fontWeight: '700', fontSize: 23, marginBottom: '6%' }}>
@@ -301,7 +301,7 @@ const Assign = ({ navigation }: any) => {
                             </TouchableOpacity>
                         </View>
 
-                        <SafeAreaView style={{ width: '100%', maxHeight:'90%' }}>
+                        <SafeAreaView style={{ width: '100%', maxHeight: '90%' }}>
 
 
                             <FlatList
@@ -320,7 +320,7 @@ const Assign = ({ navigation }: any) => {
                                 )}
                             />
                         </SafeAreaView>
-                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3 ,marginTop:'50%'}}>
+                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3, marginTop: '50%' }}>
                             <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 20 }}>Done</Text></TouchableOpacity>
 
                     </View>
@@ -346,17 +346,26 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'black',
     },
+    // searchBarContainer: {
+    //     backgroundColor: 'white',
+    //     borderRadius: 50,
+    //     width: '100%',
+    //     borderWidth: 1,
+    //     borderColor: '#94A3B8',
+    //     // height: '20%',
+    //     flexDirection: 'row',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     // position: 'relative'
+    // },
     searchBarContainer: {
-        backgroundColor: 'white',
-        borderRadius: 50,
-        width: '100%',
-        borderWidth: 1,
-        borderColor: '#94A3B8',
-        // height: '20%',
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
-        // position: 'relative'
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 8,
+        marginLeft: '3%',
+        marginRight: '3%',
     },
     suggestionsContainer: {
         maxHeight: '50%',
@@ -378,10 +387,22 @@ const styles = StyleSheet.create({
     selectedSuggestion: {
         backgroundColor: '#e6f7ff', // Highlight the selected suggestion
     },
+    // container: {
+    //     // flexDirection: 'column',
+    //     // justifyContent: 'space-around',
+    //     // alignItems: 'center',
+    // },
     container: {
-        // flexDirection: 'column',
-        // justifyContent: 'space-around',
-        // alignItems: 'center',
+        flexDirection: 'row',
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#CFD3D4',
+        borderRadius: 4,
+        gap: 10,
+        padding: 8,
+        alignItems: 'center',
+        position: 'relative',
+        zIndex: 9999,
     },
     view1: {
         padding: 25,
@@ -407,4 +428,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10
     },
+    input: {
+        flexGrow: 1,
+        flexShrink: 1,
+        fontFamily: 'Inter-Regular',
+        padding: 0,
+    },
+    searchAssistContainer: {
+        backgroundColor: 'white',
+        zIndex: 999,
+        position: 'absolute',
+        top: '180%',
+        left: 0,
+        right: 0,
+        padding: 8,
+        borderRadius: 4,
+        elevation: 3,
+        // maxHeight: 350
+        
+    }, listItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+
 });

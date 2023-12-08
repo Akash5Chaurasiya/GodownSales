@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Camera } from 'react-native-vision-camera';
 import LazzyComp from './lazzyComp';
 
-const Dashboard = ({navigation}:any) => {
+const Dashboard = ({ navigation }: any) => {
     const checkCameraPermission = async () => {
         let status = await Camera.getCameraPermissionStatus();
         if (status !== 'authorized') {
@@ -30,7 +30,7 @@ const Dashboard = ({navigation}:any) => {
             </View>
             <View style={{ backgroundColor: '#FAFAFA', }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 10, alignContent: 'center' }}>
-                    <TouchableOpacity style={styles.Purchase} onPress={()=>navigation.navigate('Purchase')}>
+                    <TouchableOpacity style={styles.Purchase} onPress={() => navigation.navigate('Purchase')}>
                         <Feather
                             name='shopping-cart'
                             size={18}
@@ -39,19 +39,44 @@ const Dashboard = ({navigation}:any) => {
                         />
                         <Text style={styles.text}>Purchase</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.Sales}>
+                    <TouchableOpacity style={styles.Sales} onPress={() => navigation.navigate('Sales')}>
                         <Feather
                             name='bookmark'
                             size={18}
                             color={'black'}
                             style={{ marginLeft: 40 }}
                         />
-                        <Text style={styles.text}>Sales</Text>
+                        <Text style={styles.text} >Sales</Text>
                     </TouchableOpacity>
                 </View>
 
             </View>
-         
+            <View >
+                <View>
+                    <Text style={{ fontSize: 16, fontWeight: '400', color: '#005D7F', margin: '2%' }}>History</Text>
+                </View>
+
+                <View
+                    style={{
+                        borderBottomColor: '#B6E7EC',
+                        // borderBottomWidth: StyleSheet.hairlineWidth,
+                        marginHorizontal: '3%',
+                        borderBottomWidth: 1
+                    }}
+                />
+
+            </View>
+             <View style={{ top:'65%',marginRight:'3%', alignItems:'flex-end'}}>
+
+            
+            <TouchableOpacity style={{backgroundColor:'#005D7F', padding:'3%', width:'52%', borderRadius:10,justifyContent:'flex-end', alignItems:'flex-end'}} onPress={()=>navigation.navigate("Reconciliation")}>
+                <Text style={{color:'white', fontSize:15}}>Reconciliation requests    +</Text>
+
+
+            </TouchableOpacity>
+            </View>
+
+
         </View>
     )
 }

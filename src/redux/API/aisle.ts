@@ -62,14 +62,15 @@ export const imageUploadAisle = async(filesPassing:any)=>{
     }
 }
 
-export const addAisleImage = async(datapassing:any)=>{
+export const addAisleImage = async(dataString:any)=>{
     try{ 
-        const {data} = await axios.post(`${assignAisleApiPath}/${datapassing.aisleId}`,
-        { image: datapassing.imageUrl, reason:datapassing.reason, addedBy:datapassing.userID, aisleCode:datapassing.aisleCode},
+        
+        const {data} = await axios.post(`${addImageAisleApiPath}`,
+        { image: dataString.imageString, reason:dataString.text, addedBy:dataString.userID, aisleCode:dataString.aisleCode},
         {
             withCredentials:true
         })
-        console.log("data-----------------------------", data)
+        console.log("data-----------------------------on adding ", data)
         return data
 
     }

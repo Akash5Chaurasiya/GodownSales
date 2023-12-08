@@ -21,6 +21,15 @@ import PurchasePage from './src/screens/Purchase/PurchasePage/PurchasePage.tsx'
 import ScanPurchase from './src/screens/Purchase/ScanPurchaserAisle/ScanPurchaseAisle.tsx'
 import ScanPurchaseAisle from './src/screens/Purchase/ScanPurchaserAisle/ScanPurchaseAisle.tsx'
 import PurchaseConfirmAisle from './src/screens/Purchase/PurchaseConfirmAisle/PurchaseConfirmAisle.tsx'
+import PurchaseAislePhoto from './src/screens/Purchase/PurchaserAislePhoto/PurchaseAislePhoto.tsx'
+import Sales from './src/screens/Sales/Sales.tsx'
+import SalesItemDes from './src/screens/Sales/SalesItemDes/SalesItemDes.tsx'
+import SalesScanQr from './src/screens/Sales/SalesScanQr/SalesScanQr.tsx'
+import SalesAisleQr from './src/screens/Sales/SalesAisleQr/SalesAisleQr.tsx'
+import SalesAisleDes from './src/screens/Sales/SalesAisleDes/SalesAisleDes.tsx'
+import SalesAislePhoto from './src/screens/Sales/SalesAislePhoto/SalesAislePhoto.tsx'
+import Reconciliation from './src/screens/Reconciliation/Reconciliation.tsx'
+
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 const App = () => {
@@ -76,11 +85,69 @@ const App = () => {
           name="PurchaseConfirmAisle"
           component={PurchaseConfirmAisle}
         />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="PurchaseAislePhoto"
+          component={PurchaseAislePhoto}
+        />
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="Sales"
+          component={Sales}
+        />
+       
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesScanQr"
+          component={SalesScanQr}
+        />
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesItemDes"
+          component={SalesItemDes}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesAisleQr"
+          component={SalesAisleQr}
+        />
+       
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesAislePhoto"
+          component={SalesAislePhoto}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesAisleDes"
+          component={SalesAisleDes}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="Reconciliation"
+          component={Reconciliation}
+        />
 
       </Stack.Navigator>
     )
   }
-  const ConfirmAisleQr = lazy(()=>import('./src/screens/AssignQr/ConfirmAisleQr/ConfirmAisleQr.tsx') )
+  // const ConfirmAisleQr = lazy(()=>import('./src/screens/AssignQr/ConfirmAisleQr/ConfirmAisleQr.tsx') )
   const AssignComp = () => {
     return (
       <Stack.Navigator initialRouteName='assign'>

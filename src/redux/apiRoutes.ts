@@ -1,4 +1,5 @@
-export const basePath = `https://www.lohawalla.com`;
+// export const basePath = `https://www.lohawalla.com`;
+export const basePath =`https://lohawalla.onrender.com`
 
 
 
@@ -18,3 +19,11 @@ export const addImageAisleApiPath = `${basePath}/store/aisle/addImage`;// second
 
 export const purchaseQrScanApiPath = `${basePath}/purchaser/pages/purchaseBill/scanQr`;
 
+//SALES
+
+export const SalesSlipApiPath= `${basePath}/sales/salesbill/`;
+
+export const SalesQrScanApiPath= `${basePath}/sales/salesbill/scanQr`;
+
+//reconcilint
+export const ReconcilitionApiPath = `${basePath}/store/reconciliation`;

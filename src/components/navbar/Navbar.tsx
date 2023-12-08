@@ -31,9 +31,9 @@ const Navbar = () => {
                                     <Image source={ImageIndex.logo} resizeMode="cover" style={styles.logoIcon} />
                                     <Text style={{ color: '#005D7F', fontSize: 17.5, fontWeight: "500", fontFamily: "Inter", lineHeight: 24.51, textAlign: 'center', marginLeft: 6.13 }}>Chawla Ispat</Text>
                                 </View>
-                                <TouchableOpacity onPress={() => actions.logout()}>
+                                <TouchableOpacity onPress={() => actions.logout() } >
                                     <Image source={authData.image} resizeMode="cover" style={{width: Dimensions.get('window').height * 0.058,height: Dimensions.get('window').height * 0.058,alignSelf:'flex-end'}} />
-                                    <Text>{authData.name}</Text>
+                                    <Text style={{color:'#005D7F', marginBottom:'20%', textAlignVertical:'center'}}>{authData.name}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
