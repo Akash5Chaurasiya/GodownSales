@@ -1,5 +1,5 @@
 import axios from "axios";
-import {SalesSlipApiPath, SalesQrScanApiPath} from '../apiRoutes'
+import {SalesSlipApiPath, SalesQrScanApiPath, SalesVerificationApiPath} from '../apiRoutes'
 
 export const getAllSalesSlip = async()=>{
 
@@ -30,3 +30,20 @@ console.log("data", barcodeData)
         return err;
     }
 }
+
+export const SalesVerificationSlip = async(dataString:any)=>{
+    
+        try{
+            const {data} = await axios.post(`${SalesVerificationApiPath}/${dataString.aisleId}`, 
+             { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleCode:dataString.aisleCode}
+            ,{
+                withCredentials:true
+            })
+            console.log("verification sales ", data)
+            return data
+    
+        }
+        catch(err){
+            return err;
+        }
+    }

@@ -1,12 +1,13 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {getAllSalesSlip, SalesQrScanSlip} from '../API/sales'
+import {getAllSalesSlip, SalesQrScanSlip, SalesVerificationSlip} from '../API/sales'
 
 
 
 const initialState ={
     salesSlip:[],
     SalesQrScan:[],
+    SalesVerification:[],
     status:'idle',
 }
 
@@ -38,6 +39,20 @@ export const SalesQrScanSlipAsync :any = createAsyncThunk(
         }
     }
 )
+export const SalesVerificationSlipAsync:any = createAsyncThunk(
+    "SalesVerificationSlipAsync",
+    async(dataString)=>{
+        try{
+            console.log("vvvvvvvvvvvvvvvvv-------------",dataString)
+            const response:any = await SalesVerificationSlip(dataString) ;
+            console.log("verifcation on sales slice  ----", response)
+            return response;
+        }
+        catch(err){
+            return err
+        }
+    }
+)
 
 export const SalesSlice = createSlice({
     name:'SalesSlice',
@@ -59,6 +74,14 @@ export const SalesSlice = createSlice({
             state.status= 'idle',
             state.SalesQrScan= action.payload.data
             console.log("saleqrrrscan--------------------", state.SalesQrScan)
+        })
+        .addCase(SalesVerificationSlipAsync.pending, (state)=>{
+            state.status='loading'
+        })
+        .addCase(SalesVerificationSlipAsync.fulfilled, (state, action)=>{
+            state.status= 'idle',
+            state.SalesVerification= action.payload
+            console.log("ssalaesV Payload--------------------", state.SalesQrScan)
         })
     }
 

@@ -5,6 +5,7 @@ import { TouchableRipple } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather';
 import { Camera } from 'react-native-vision-camera';
 import LazzyComp from './lazzyComp';
+import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
 const Dashboard = ({ navigation }: any) => {
     const checkCameraPermission = async () => {
@@ -69,7 +70,12 @@ const Dashboard = ({ navigation }: any) => {
              <View style={{ top:'65%',marginRight:'3%', alignItems:'flex-end'}}>
 
             
-            <TouchableOpacity style={{backgroundColor:'#005D7F', padding:'3%', width:'52%', borderRadius:10,justifyContent:'flex-end', alignItems:'flex-end'}} onPress={()=>navigation.navigate("Reconciliation")}>
+            <TouchableOpacity style={{backgroundColor:'#005D7F', padding:'3%', width:'52%', borderRadius:10,justifyContent:'flex-end', alignItems:'flex-end'}} onPress={()=>
+            Toast.show({
+                type: ALERT_TYPE.WARNING,
+                title: "Working on:)",
+                textBody: 'Will update Soon',
+              })}>
                 <Text style={{color:'white', fontSize:15}}>Reconciliation requests    +</Text>
 
 

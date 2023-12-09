@@ -23,7 +23,7 @@ const ConfirmAisleQr = ({navigation,route}:any) => {
            Dialog.show({
               type: ALERT_TYPE.SUCCESS,
               title: "Success",
-              textBody: 'Qr assign Successfully"',
+              textBody: 'Qr assign Successfully',
             })
             navigation.navigate('assign')
           }

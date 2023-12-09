@@ -77,7 +77,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
-              textBody: 'please write reason and try again',
+              textBody: 'Click again to confirm the image',
             })
 
             if (imageString) {

@@ -2,9 +2,13 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import AislePhotoPage from '../../../components/AislePhotoPage/AislePhotoPage'
 
-const SalesAislePhoto = () => {
+const SalesAislePhoto = ({navigation}:any) => {
+  const succesNavigate = "SalesVerification";
+  const BackName = "Sales";
+  const Verification = "Aisle Photo"
   return (
-   <AislePhotoPage/>
+   
+   <AislePhotoPage succesNavigate ={succesNavigate} BackName={BackName} navigation= {navigation} capture={Verification}/>
   )
 }
 

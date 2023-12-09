@@ -29,6 +29,8 @@ import SalesAisleQr from './src/screens/Sales/SalesAisleQr/SalesAisleQr.tsx'
 import SalesAisleDes from './src/screens/Sales/SalesAisleDes/SalesAisleDes.tsx'
 import SalesAislePhoto from './src/screens/Sales/SalesAislePhoto/SalesAislePhoto.tsx'
 import Reconciliation from './src/screens/Reconciliation/Reconciliation.tsx'
+import ReconScanQr from './src/screens/Reconciliation/ReconScanQr/ReconScanQr.tsx'
+import SalesVerification from './src/screens/Sales/SalesVerification/SalesVerification.tsx'
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -136,6 +138,13 @@ const App = () => {
           name="SalesAisleDes"
           component={SalesAisleDes}
         />
+           <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="SalesVerification"
+          component={SalesVerification}
+        />
         <Stack.Screen
           options={{
             headerShown: false,
@@ -143,7 +152,13 @@ const App = () => {
           name="Reconciliation"
           component={Reconciliation}
         />
-
+         <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="ReconScanQr"
+          component={ReconScanQr}
+        />
       </Stack.Navigator>
     )
   }

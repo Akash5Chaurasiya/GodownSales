@@ -5,12 +5,13 @@ import { Dispatch } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { SalesQrScanSlipAsync } from '../../../redux/Slice/sales'
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
-const SalesScanQr = ({navigation}:any) => {
+
+const ReconScanQr = ({navigation,route}:any) => {
+  const {itemId} = route.params
   const dispatch = useDispatch();
 
   const handleBarcodeScanned = (barcode: string) => {
-    // Customize the dispatch action and logic for Screen1
-  // --> need  dispatch(purchaseQrScanAsync({ data: barcode }));
+  
  
   const datasplit = barcode.replace(/s\//g, '').replace(/"/g, '');
   const barcodeData = {"data": datasplit}
@@ -23,7 +24,7 @@ const SalesScanQr = ({navigation}:any) => {
           title: "Success",
           textBody: 'Successfully barcode scan',
         })
-        navigation.navigate('SalesItemDes')
+        navigation.navigate('ReconAisleDes')
 
       }
       else{
@@ -35,21 +36,20 @@ const SalesScanQr = ({navigation}:any) => {
           title: "Error",
           textBody: res.payload.message,
         })
-        navigation.navigate('Sales')
+        navigation.navigate('Reconciliation')
       }
     })
   };
 
   const handleBackButton = () => {
-    navigation.navigate("Sales");
+    navigation.navigate("Reconciliation");
     return true;
   };
-const saleName:any = "Sales";
   return (
-   <BarcodeScan onClose={handleBackButton}  onBarcodeScanned={handleBarcodeScanned} name= {saleName} />
-  )
+    <BarcodeScan onClose={handleBackButton}  onBarcodeScanned={handleBarcodeScanned} />
+   )
 }
 
-export default SalesScanQr
+export default ReconScanQr
 
 const styles = StyleSheet.create({})

@@ -42,11 +42,11 @@ const Assign = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = React.useState(false);
     const [text, setText] = React.useState<string>('');
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     console.log("TEXT, SHOW", text, show)
 
     useEffect(() => {
-        setShow(true);
+        // setShow(true);
         dispatch(getAllShelfAsync());
 
 
@@ -125,7 +125,7 @@ const Assign = ({ navigation }: any) => {
         setSelectedItemShelf(name);
         // setIsSearchActive(false)
         // setSearchQuery('');
-        // setShow(false)
+        setShow(false)
 
     };
     const hideModal = () => {
@@ -168,6 +168,8 @@ const Assign = ({ navigation }: any) => {
                                 onFocus={() => setSelected(true)}
                                 onBlur={() => setSelected(false)}
                                 onChangeText={text => {
+                                    setShow(true);
+
                                     console.log('text---------------', text);
                                     setText(text);
                                 }}
@@ -319,9 +321,10 @@ const Assign = ({ navigation }: any) => {
                                     </View>
                                 )}
                             />
-                        </SafeAreaView>
-                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3, marginTop: '50%' }}>
+                            <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3, marginTop: '50%' }}>
                             <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 20 }}>Done</Text></TouchableOpacity>
+                        </SafeAreaView>
+                        
 
                     </View>
 

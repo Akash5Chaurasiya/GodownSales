@@ -20,7 +20,7 @@ const SalesAisleQr = ({navigation}:any) => {
      Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: "Success",
-        textBody: ' Aisle Qr scan Successfully"',
+        textBody: 'Aisle Qr scan Successfully',
       })
       navigation.navigate('SalesAisleDes')
     }
@@ -37,11 +37,12 @@ const SalesAisleQr = ({navigation}:any) => {
   };
 
   const handleBackButton = () => {
-    navigation.navigate("SalesAisleQr");
+    navigation.navigate("SalesItemDes");
     return true;
   };
+  const  namePass = "Aisle"
   return (
-    <BarcodeScan onClose={handleBackButton}  onBarcodeScanned={handleBarcodeScanned} />
+    <BarcodeScan onClose={handleBackButton}  onBarcodeScanned={handleBarcodeScanned} name={namePass} />
   
   )
 }

@@ -34,7 +34,7 @@ export default function  DescriptionPage(props: RTItem) {
     <Navbar />
     <View style={{ maxHeight: 500, borderWidth: 0.5, height: '70%', margin: '5%', borderRadius: 8, borderColor: '#878787' }}>
    
-          <Text style={styles.status}>{status}</Text>
+    <Text style={status === 'pending' ? styles.status : styles.defaultstatus}>{status}</Text>
         
       <View style={{ flexDirection: 'row', marginTop: '8%', marginHorizontal: '4%' }}>
 
@@ -53,12 +53,12 @@ export default function  DescriptionPage(props: RTItem) {
 
       <View className='flex flex-row justify-between mx-5'>
         <View className='flex flex-col justify-center'>
-          <Text className='text- text-base font-semibold text-[#005D7F]'>Purchase Number</Text>
+          <Text className='text- text-base font-semibold text-[#005D7F]'>Order Number</Text>
           <Text className='text- text-base font-normal text-[#172B4D]'>{Number}</Text>
         </View>
         <View className='flex flex-col justify-center'>
           <Text className='text- text-base font-semibold text-[#005D7F]'>Bill Number</Text>
-          <Text className='text- text-base font-normal text-[#172B4D]'>0193456</Text>
+          <Text className='text- text-base font-normal text-[#172B4D]'>00000000</Text>
         </View>
       </View>
 
@@ -137,6 +137,22 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         // marginLeft:'5%', 
         backgroundColor: 'yellow',
+        borderRadius: 10,
+        // textAlign: 'center',
+        paddingHorizontal: '2%',
+        paddingVertical: 1, 
+        width:'20%',
+        marginTop:'5%',
+        marginLeft:'2%',
+        marginBottom:'-5%'
+    
+      },
+      defaultstatus: {
+        fontSize: 15,
+        color: 'white',
+        fontWeight: '500',
+        // marginLeft:'5%', 
+        backgroundColor: 'green',
         borderRadius: 10,
         // textAlign: 'center',
         paddingHorizontal: '2%',

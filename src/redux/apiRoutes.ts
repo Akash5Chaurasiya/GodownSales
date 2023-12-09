@@ -25,5 +25,7 @@ export const SalesSlipApiPath= `${basePath}/sales/salesbill/`;
 
 export const SalesQrScanApiPath= `${basePath}/sales/salesbill/scanQr`;
 
+export const SalesVerificationApiPath= `${basePath}/sales/salesbill/addImage`;
+
 //reconcilint
 export const ReconcilitionApiPath = `${basePath}/store/reconciliation`;

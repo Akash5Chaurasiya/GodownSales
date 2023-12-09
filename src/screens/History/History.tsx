@@ -3,8 +3,9 @@ import React from 'react'
 
 const History = () => {
     return (
-        <View>
-            <Text>History</Text>
+        <View style={{justifyContent:'center', alignItems:'center',marginTop:'60%' }}>
+            <Text style={{color:'#005D7F', fontWeight:'600', fontSize:20}}>Will Update soon :)</Text>
+            <Text style={{color:'#005D7F', fontWeight:'600',}}>Have Patience</Text>
         </View>
     )
 }

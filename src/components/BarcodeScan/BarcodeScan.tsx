@@ -14,9 +14,11 @@ import { useDispatch, useSelector } from 'react-redux';
 interface CameraProps {
     onBarcodeScanned: (barcode: string) => void;
     onClose: () => void;
+    id?: string;//optionsl ;
+    name?: string;//options;
 }
 
-const BarcodeScan: React.FC<CameraProps> = ({ onBarcodeScanned, onClose }) => {
+const BarcodeScan: React.FC<CameraProps> = ({ onBarcodeScanned, onClose,id , name }) => {
     const devices = useCameraDevices();
     const device = devices.back;
     const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.ALL_FORMATS]);
@@ -76,7 +78,7 @@ const BarcodeScan: React.FC<CameraProps> = ({ onBarcodeScanned, onClose }) => {
                     }}
                     onPress={() => handleBackButton()}
                 >
-
+   
                     {/* <XMarkIcon color="red" fill="white" size={42} /> */}
                     <Feather
                         name="x"
@@ -86,6 +88,7 @@ const BarcodeScan: React.FC<CameraProps> = ({ onBarcodeScanned, onClose }) => {
                     />
 
                 </TouchableOpacity>
+                
                 <Camera
                     style={StyleSheet.absoluteFill}
                     device={device}
@@ -95,9 +98,11 @@ const BarcodeScan: React.FC<CameraProps> = ({ onBarcodeScanned, onClose }) => {
                     audio={false}
                     enableZoomGesture
                 />
+<View style={{justifyContent:'center', alignItems:'center',top:'20%' }}>
 
 
-
+<Text style={{color:'white', fontSize:25, fontWeight:'800', }}>Scan QR Code Of {name}</Text>
+</View>
 
                 <RNHoleView
                     holes={[
