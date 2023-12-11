@@ -154,6 +154,11 @@ const PurchaseCamera: React.FC<CamProps> = ({ navigation,route }) => {
         />
        
 
+       <View style={{justifyContent:'center', alignItems:'center',top:'20%' }}>
+
+
+<Text style={{color:'white', fontSize:25, fontWeight:'800', }}>Scan QR Code Of Purchase</Text>
+</View>
 
       
         <RNHoleView

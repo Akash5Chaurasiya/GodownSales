@@ -27,10 +27,15 @@ const Navbar = () => {
                     (<View style={styles.container}>
                         <View style={{ flex: 1 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                              
                                 <View style={styles.logoWrapper}>
                                     <Image source={ImageIndex.logo} resizeMode="cover" style={styles.logoIcon} />
+                                    <View style={{flexDirection:'column'}}>
                                     <Text style={{ color: '#005D7F', fontSize: 17.5, fontWeight: "500", fontFamily: "Inter", lineHeight: 24.51, textAlign: 'center', marginLeft: 6.13 }}>Chawla Ispat</Text>
+                                    <Text  style={{ color: '#005D7F', fontSize: 14, fontWeight: "300", fontFamily: "Inter", lineHeight: 24.51, textAlign: 'center', marginLeft: 6.13 }}>version no. 1.1</Text>
                                 </View>
+                                </View>
+                                
                                 <TouchableOpacity onPress={() => actions.logout() } >
                                     <Image source={authData.image} resizeMode="cover" style={{width: Dimensions.get('window').height * 0.058,height: Dimensions.get('window').height * 0.058,alignSelf:'flex-end'}} />
                                     <Text style={{color:'#005D7F', marginBottom:'20%', textAlignVertical:'center'}}>{authData.name}</Text>
@@ -44,6 +49,7 @@ const Navbar = () => {
                             <View style={styles.logoWrapper}>
                                 <Image source={ImageIndex.logo} resizeMode="cover" style={styles.logoIcon} />
                                 <TextInput style={{ color: '#005D7F', fontSize: 17.5, fontWeight: "500", fontFamily: "Inter", lineHeight: 24.51, textAlign: 'center', marginLeft: 6.13 }}>Chawla Ispat</TextInput>
+                               
                             </View>
                         </View>
                     </View>)

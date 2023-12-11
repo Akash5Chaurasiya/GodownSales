@@ -48,7 +48,7 @@ export default function FlatlistComp(props: RTListItem) {
 
 
         <View style={styles.bottomSection}>
-          <Text style={styles.productNumber}>Purchase Number</Text>
+          <Text style={styles.productNumber}>Order Number</Text>
           <Text style={styles.purchaserNumber}>{productNumber}</Text>
 
         </View>

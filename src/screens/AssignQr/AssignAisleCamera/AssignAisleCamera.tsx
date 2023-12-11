@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Linking, Image, TouchableOpacity, Alert, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Linking, Image, TouchableOpacity, Alert, TextInput , Modal} from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import { useRoute } from '@react-navigation/native';
@@ -17,6 +17,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
 
   console.log("coming imagedata", data, aisleCode, shelfCode,)
   const camera = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const devices = useCameraDevices();
   const device = devices.back;
@@ -77,35 +78,36 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
-              textBody: 'Click again to confirm the image',
+              textBody: 'Enter the reason to confirm the image',
             })
+            setIsVisible(true);
 
-            if (imageString) {
-              const dataString = { imageString, text, aisleCode, userID }
-              console.log("newcheck------------", dataString)
-              dispatch(addAisleImageAsync(dataString)).then((res: any) => {
-                console.log("------------", res.payload)
-                if (res.payload.status) {
-                  Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: "Success",
-                    textBody: 'Successfully Upload Image',
-                  })
-                  navigation.navigate('ConfirmAisleQr', { ImageSource, imageData, aisleCode, shelfCode });
+            // if (imageString) {
+            //   const dataString = { imageString, text, aisleCode, userID }
+            //   console.log("newcheck------------", dataString)
+            //   dispatch(addAisleImageAsync(dataString)).then((res: any) => {
+            //     console.log("------------", res.payload)
+            //     if (res.payload.status) {
+            //       Toast.show({
+            //         type: ALERT_TYPE.SUCCESS,
+            //         title: "Success",
+            //         textBody: 'Successfully Upload Image',
+            //       })
+            //       navigation.navigate('ConfirmAisleQr', { ImageSource, imageData, aisleCode, shelfCode });
 
-                }
-                else {
+            //     }
+            //     else {
 
-                  Toast.show({
-                    type: ALERT_TYPE.DANGER,
-                    title: "Error",
-                    textBody: res.payload.message,
-                  })
-                  // navigation.navigate('assign')
-                }
-              })
+            //       Toast.show({
+            //         type: ALERT_TYPE.DANGER,
+            //         title: "Error",
+            //         textBody: res.payload.message,
+            //       })
+            //       // navigation.navigate('assign')
+            //     }
+            //   })
 
-            }
+            // }
 
           } else {
             // Alert.alert("Upload failed. Response payload is empty.");
@@ -130,6 +132,44 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
     setShowPhoto(false);
     setImageSource(null);
   };
+  const handleImageConfirm = () => {
+    if (imageString && text) {
+      const dataString = { imageString, text, aisleCode, userID }
+      console.log("newcheck------------", dataString)
+      dispatch(addAisleImageAsync(dataString)).then((res: any) => {
+        console.log("------------", res.payload)
+        if (res.payload.status) {
+          setIsVisible(false);
+          setText(" ");
+          Toast.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Success",
+            textBody: 'Successfully Upload Image',
+          })
+          navigation.navigate('ConfirmAisleQr', { ImageSource, imageData, aisleCode, shelfCode });
+
+        }
+        else {
+
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: res.payload.message,
+          })
+          navigation.navigate('assign')
+        }
+      })
+
+    }else{
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: "warn",
+        textBody: 'Please enter the reason',
+      })
+
+    }
+
+  }
 
   if (!device) {
     console.error('Camera device not available.');
@@ -158,7 +198,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
       )}
       {showPhoto && (
         <View style={styles.confirmButtonContainer}>
-          <TextInput
+          {/* <TextInput
             style={{
               borderColor: 'gray',
               borderRadius: 8,
@@ -170,7 +210,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
 
 
 
-          />
+          /> */}
           <View style={styles.buttonRow}>
             <TouchableOpacity
               onPress={handleRetake}
@@ -193,6 +233,44 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
           </View>
         </View>
       )}
+      <Modal
+        visible={isVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsVisible(false)}
+      >
+        <View style={styles.modalContainer1}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Enter The Reason</Text>
+            {/* <Text style={styles.label}>hiii</Text> */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={text}
+                onChangeText={(text) => setText(text)}
+                placeholder="Enter reason"
+
+              />
+
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setIsVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.okButton,]}
+                onPress={handleImageConfirm}
+
+              >
+                <Text style={styles.buttonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -244,5 +322,70 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
 
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 20,
+    alignItems: 'center',
+    margin: '5%'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end', // Align buttons to the right
+  },
+  cancelButton: {
+    backgroundColor: '#005D7F',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  okButton: {
+    backgroundColor: '#005D7F',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    paddingHorizontal: 20
+  },
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
+  },
+  modalContainer1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  // modalContent: {
+  //     width: '80%',
+  //     backgroundColor: 'white',
+  //     borderRadius: 8,
+  //     padding: 16,
+  // },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#000',
+    borderBottomWidth: 1
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 18, // Increase font size for larger input
+    paddingVertical: 12, // Increase padding for larger input
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
+    marginBottom: 16,
   },
 })

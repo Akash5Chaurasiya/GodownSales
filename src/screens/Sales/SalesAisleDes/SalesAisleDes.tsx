@@ -16,7 +16,7 @@ const SalesAisleDes = ({navigation}:any) => {
     <View >
 
    
-    {datafrompurchase.itemData.length ==0 ? <Text style={{color:'#005D7F', fontWeight:'500', margin:'6%', fontSize:17}}>No item present in Aisle :)!!</Text> :<Text>willl display soon :) </Text>}
+    {datafrompurchase.itemData.length ==0 ? <Text style={{color:'#005D7F', fontWeight:'500', margin:'6%', fontSize:17}}>No item present in Aisle :)!!</Text> :<Text style={{color:'#005D7F', fontWeight:'500', margin:'6%', fontSize:17}}>willl display soon :) </Text>}
     </View>
     <View style={{ flexDirection: 'column', alignItems: 'center', marginTop:'90%' }} className=' gap-2'>
       <TouchableOpacity style={{ width: '90%', backgroundColor: '#005D7F', padding: '4%', borderRadius: 9 }} onPress={()=>navigation.navigate("SalesAislePhoto")}>

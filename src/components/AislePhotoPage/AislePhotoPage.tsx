@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useAuthContext } from '../../auth/authorization/AuthGuard'
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import { addAisleImageAsync, imageUploadAisleAsync } from '../../redux/Slice/aisleSlice';
+import {SalesVerificationSlipAsync} from '../../redux/Slice/sales'
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -84,7 +85,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
           if (response.payload && response.payload.length > 0) {
             // Alert.alert("Upload successful");
           {capture=="Verification" ?setIsVisibleQuantity(true) :setIsVisible(true)}
-            setIsVisibleQuantity(true);
+            // setIsVisibleQuantity(true);
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
@@ -161,7 +162,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
     if (imageString && textQuantity) {
       const dataString = { imageString, textQuantity, aisleCode, userID, aisleId }
       console.log("newcheck------------", dataString)
-      dispatch(addAisleImageAsync(dataString)).then((res: any) => {
+      dispatch(SalesVerificationSlipAsync(dataString)).then((res: any) => {
         console.log("------------", res.payload)
         if (res.payload.status) {
         console.log("cclickkkk")
