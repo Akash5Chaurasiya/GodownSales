@@ -27,7 +27,8 @@ const Purchase = ({ navigation }: any) => {
     dispatch(getAllPurchaseSlipAsync());
   }, [])
 
-  const purchaseList = useSelector((state: any) => state.purchase.purchaseSlip)
+  const pendingpurchaseList = useSelector((state: any) => state.purchase.purchaseSlip)
+  const purchaseList = pendingpurchaseList?.filter((purchase:any)=>purchase.status === 'pending')
   console.log("----------------------------editititi", purchaseList)
 
   const purchaseNumbers: any = [];
@@ -228,6 +229,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontFamily: 'Inter-Regular',
     padding: 0,
+    color:'black'
   },
   searchAssistContainer: {
     backgroundColor: 'white',

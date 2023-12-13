@@ -31,7 +31,7 @@ export const scanAlisleAsync:any = createAsyncThunk(
         try{
             console.log("seach", item)
             const response:any = await scanAisle(item) ;
-            // console.log("ressssss", response)
+            console.log("ressssss", response)
             return response;
 
         }

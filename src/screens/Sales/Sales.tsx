@@ -24,8 +24,10 @@ const Sales = ({navigation}:any) => {
     dispatch(getAllSalesSlipAsync());
   }, [])
 
-  const salesList = useSelector((state:any)=>state.sales.salesSlip)
-  console.log("----------------------", salesList)
+  const pendingSalesList  = useSelector((state:any)=>state.sales.salesSlip)
+  const salesList = pendingSalesList?.filter((sales :any)=> sales.status ==='pending')
+  
+  console.log("----------------------today", pendingSalesList)
 
   const salesNumbers : any=[];
   salesList?.forEach((sales:any , index:any)=>{
@@ -219,6 +221,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontFamily: 'Inter-Regular',
     padding: 0,
+    color:'black'
   },
   searchAssistContainer: {
     backgroundColor: 'white',

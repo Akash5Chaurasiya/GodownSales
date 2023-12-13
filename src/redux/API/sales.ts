@@ -30,12 +30,14 @@ console.log("data", barcodeData)
         return err;
     }
 }
+//  params m -> salesslip ki id 
+// asisle id = aisle id 
 
 export const SalesVerificationSlip = async(dataString:any)=>{
     
         try{
-            const {data} = await axios.post(`${SalesVerificationApiPath}/${dataString.aisleId}`, 
-             { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleCode:dataString.aisleCode}
+            const {data} = await axios.post(`${SalesVerificationApiPath}/${dataString.salesSlipId}`, 
+             { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleId:dataString.aisleID}
             ,{
                 withCredentials:true
             })

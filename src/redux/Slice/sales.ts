@@ -81,7 +81,7 @@ export const SalesSlice = createSlice({
         .addCase(SalesVerificationSlipAsync.fulfilled, (state, action)=>{
             state.status= 'idle',
             state.SalesVerification= action.payload
-            console.log("ssalaesV Payload--------------------", state.SalesQrScan)
+            // console.log("ssalaesV Payload--------------------", state.SalesQrScan)
         })
     }
 

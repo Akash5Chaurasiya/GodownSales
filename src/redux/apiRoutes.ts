@@ -18,6 +18,7 @@ export const uploadAisleApiPath = `${basePath}/imageService/upload`; // 1st
 export const addImageAisleApiPath = `${basePath}/store/aisle/addImage`;// second 
 
 export const purchaseQrScanApiPath = `${basePath}/purchaser/pages/purchaseBill/scanQr`;
+export const purchaseVerificationApiPath = `${basePath}/purchaser/pages/purchaseBill/addImage`;
 
 //SALES
 

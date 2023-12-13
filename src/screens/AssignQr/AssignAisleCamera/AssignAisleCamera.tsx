@@ -376,10 +376,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
   },
+  
   input: {
     flex: 1,
     fontSize: 18, // Increase font size for larger input
     paddingVertical: 12, // Increase padding for larger input
+    color:'black'
   },
   inputContainer: {
     flexDirection: 'row',

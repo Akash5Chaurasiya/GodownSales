@@ -35,11 +35,14 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
   console.log("checkkkkeckkeckk", imageString)
   const aisleCodeData = useSelector((state: any) => state.aisle.scanaisle)
   const aisleCode = aisleCodeData.aisleCode;
-  console.log("------------tttttttttttttttttttt", aisleCodeData)
+  const aisleID = aisleCodeData._id;
+  console.log("------------tttttttttttttttttttt", aisleID)
+
+  
 
   const SalesData = useSelector((state:any)=>state.sales.SalesQrScan);
- const  aisleId = SalesData._id
-  console.log("cccccccccccccccccccccc, ",aisleId )
+  const  salesSlipId = SalesData._id
+  console.log("cccccccccccccccccccccc, ",salesSlipId )
   useEffect(() => {
     async function getPermission() {
       const permission = await Camera.requestCameraPermission();
@@ -156,11 +159,8 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
 
   }
   const handleImageConfirmQuantity = () => {
-
-
-
     if (imageString && textQuantity) {
-      const dataString = { imageString, textQuantity, aisleCode, userID, aisleId }
+      const dataString = { imageString, textQuantity,  userID, aisleID , salesSlipId }
       console.log("newcheck------------", dataString)
       dispatch(SalesVerificationSlipAsync(dataString)).then((res: any) => {
         console.log("------------", res.payload)
@@ -297,7 +297,8 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
             </View>
           </View>
         </View>
-      </Modal> :<Modal
+      </Modal> :
+      <Modal
         visible={isVisible}
         transparent={true}
         animationType="slide"
@@ -335,44 +336,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
           </View>
         </View>
       </Modal> }
-      {/* <Modal
-        visible={isVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setIsVisible(false)}
-      >
-        <View style={styles.modalContainer1}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Enter The Reason</Text>
-            <Text style={styles.label}>hiii</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                value={text}
-                onChangeText={(text) => setText(text)}
-                placeholder="Enter reason"
-
-              />
-
-            </View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setIsVisible(false)}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.okButton,]}
-                onPress={handleImageConfirm}
-
-              >
-                <Text style={styles.buttonText}>OK</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
+  
     </View>
   )
 }
@@ -480,6 +444,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18, // Increase font size for larger input
     paddingVertical: 12, // Increase padding for larger input
+    color:'black'
   },
   inputContainer: {
     flexDirection: 'row',

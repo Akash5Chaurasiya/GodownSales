@@ -39,6 +39,7 @@ const Assign = ({ navigation }: any) => {
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedItemShelf, setSelectedItemShelf] = useState(null);
+    const [selectedItemShelfList, setSelectedItemShelfList] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = React.useState(false);
     const [text, setText] = React.useState<string>('');
@@ -52,15 +53,19 @@ const Assign = ({ navigation }: any) => {
 
     }, []);
     const suggestions = useSelector((state: any) => state.shelf.allslices)
+
     const shelfData = suggestions?.map((item: any) => ({
         shelfName: item.shelfName,
         shelfCode: item.shelfCode,
     }));
+    // console.log("_---------------------------------_", shelfData)
+
 
     const handleSubmit = () => {
         setShow(false);
         setText('');
     };
+
     const filteredSuggestions = shelfData?.filter((suggestion: any) =>
         suggestion.shelfName.toLowerCase().includes(text.toLowerCase())
     );
@@ -69,42 +74,48 @@ const Assign = ({ navigation }: any) => {
         shelfName: suggestion.shelfName,
         shelfCode: suggestion.shelfCode,
     }));
+
     console.log("filteredShelfCodes--------------------------", filteredShelfCodes)
-    const initialCheckedState: any = {};
-    filteredSuggestions?.forEach((suggestion: any) => {
-        initialCheckedState[suggestion.shelfName] = false;
-    });
+    // const initialCheckedState: any = {};
 
-    const checkedItemsArray = selectedItemShelf
-        ? [
-            {
-                shelfName: selectedItemShelf,
-                shelfCode: shelfData?.find((item: any) => item.shelfName === selectedItemShelf)?.shelfCode || '',
-            },
-        ]
-        : [];
-    const handleDeleteItem = (shelfName: string) => {
-        setCheckedItems(null);
-        setSelectedItemShelf(null);
+    // filteredSuggestions?.forEach((suggestion: any) => {
+    //     initialCheckedState[suggestion.shelfName] = false;
+    // });
 
+    // const filteredData = shelfData?.filter((shelf: any) => shelf.shelfName === selectedItemShelf)
+    // console.log("filtereddata_------------------------_", filteredData)
+    const dataList = text ? filteredShelfCodes : shelfData
+    const handleSelectShelf = (name: any) => {
+        setSelectedItemShelf(name);
+        setShow(false)
 
     };
+
+    // const handleDeleteItem = (shelfName: string) => {
+    //     setCheckedItems(null);
+    //     setSelectedItemShelf(null);
+    // };
     const handleCrossIconPress = () => {
         setSearchQuery(''); // Reset search query
         setIsSearchActive(false); // Show suggestions
     };
 
-    //aisle 
+    //aisle modal start 
+
 
     const suggestionAisle = useSelector((state: any) => state.aisle.allaisle)
     const aisleName = suggestionAisle?.map((item: any) => item.aisleName)
-    // console.log("aisleData--------------------------------------- ", suggestionAisle)
-    let aisleId: any;
-    let aisleCode: any, shelfCode: any;
+    console.log("aisleData--------------------------------------- ", aisleName)
+    // console.log("selected shelf------------------", selectedItemShelf)
+    console.log("shelf nameselected in list", selectedItemShelfList)
+    console.log("itemaisle name-------------------", selectedItem)
+
+    let aisleId: any, aisleCode: any, shelfCode: any, isAlredyAssign: any;
     const findAisleDetails = (aisleName: any) => {
         const selectedAisle = suggestionAisle?.find((aisle: any) => aisle.aisleName === aisleName);
-        // console.log("data of particular asile ------------------------------------------>", selectedAisle)
-
+        console.log("matching asile ------------------------------------------>", selectedAisle)
+        isAlredyAssign = selectedAisle?.imageLogs;
+        console.log("lengthhh-------", isAlredyAssign)
         if (selectedAisle) {
             aisleId = selectedAisle._id;
             shelfCode = selectedAisle.shelf.shelfCode;
@@ -117,17 +128,14 @@ const Assign = ({ navigation }: any) => {
     };
 
     const selectedItemAisleDetails = findAisleDetails(selectedItem);
+    console.log("navigation data", selectedItemAisleDetails)
+
 
     const handleSelect = (name: any) => {
         setSelectedItem(name);
     };
-    const handleSelectShelf = (name: any) => {
-        setSelectedItemShelf(name);
-        // setIsSearchActive(false)
-        // setSearchQuery('');
-        setShow(false)
 
-    };
+
     const hideModal = () => {
         setShowModal(false);
 
@@ -183,6 +191,7 @@ const Assign = ({ navigation }: any) => {
                                     onPress={() => {
                                         setText('');
 
+
                                     }}
                                 >
                                     <Feather
@@ -193,51 +202,59 @@ const Assign = ({ navigation }: any) => {
                                     />
                                 </TouchableOpacity>
                             )}
-                            {text && show && (
+                            {/* {text && show && (
                                 <View style={styles.searchAssistContainer}>
-                                    <ScrollView style={{ flex: 1  }}>
+                                    <ScrollView style={{ flex: 1 }}>
                                         <SafeAreaView>
-                                        <FlatList
-                                            // style={{ maxHeight: 250 }}
+                                            <FlatList
+                                                // style={{ maxHeight: 350 }}
 
-                                            data={filteredShelfCodes}
-                                            keyExtractor={(item, index) => index.toString()} // Set a unique key for each item
-                                            renderItem={({ item }) => (
-                                                <View style={styles.listItem}>
-                                                    <Text style={{
-                                                        fontFamily: 'Inter-SemiBold',
-                                                        color: 'black',
-                                                    }}>{item.shelfName}</Text>
-                                                    <RadioButton.Android
-                                                        value={item.shelfName}
-                                                        status={selectedItemShelf === item.shelfName ? 'checked' : 'unchecked'}
-                                                        onPress={() => handleSelectShelf(item.shelfName)}
-                                                    />
-                                                </View>
-                                            )}
-                                        />
+                                                data={filteredShelfCodes}
+                                                keyExtractor={(item, index) => index.toString()} // Set a unique key for each item
+                                                renderItem={({ item }) => (
+                                                    <View style={styles.listItem}>
+                                                        <Text style={{
+                                                            fontFamily: 'Inter-SemiBold',
+                                                            color: 'black',
+                                                        }}>{item.shelfName}</Text>
+                                                        <RadioButton.Android
+                                                            value={item.shelfName}
+                                                            status={selectedItemShelf === item.shelfName ? 'checked' : 'unchecked'}
+                                                            onPress={() => handleSelectShelf(item.shelfName)}
+                                                        />
+                                                    </View>
+                                                )}
+                                            />
                                         </SafeAreaView>
                                     </ScrollView>
                                 </View>
-                            )}
+                            )} */}
                         </View>
 
                         <View style={{ flexDirection: 'column', marginTop: 10 }}>
-                            <Text style={{ color: '#005D7F', fontWeight: '700', fontSize: 23, marginBottom: '6%' }}>
+                            <Text style={{ color: '#005D7F', fontWeight: '700', fontSize: 23, marginBottom: '6%', textDecorationLine: 'underline' }}>
                                 Shelf List
                             </Text>
                             <FlatList
-                                data={checkedItemsArray}
+                                data={dataList}
                                 keyExtractor={(item) => item.shelfName}
+                                style={{ maxHeight: '90%' }}
                                 renderItem={({ item }: any) => (
                                     // console.log('item', item),
                                     (
-                                        <TouchableOpacity onPress={() => { setShowModal(true); dispatch(getAllAlisleAsync(item.shelfCode)) }} style={{ flexDirection: 'row', justifyContent: 'space-between', borderRadius: 8, borderWidth: 1, padding: 12, borderColor: '#94A3B8', alignItems: 'center' }}>
-                                            <Text style={{ color: '#118EB1', fontSize: 20 }}>{item.shelfName}</Text>
+                                        <TouchableOpacity onPress={() => { setSelectedItemShelfList(item.shelfName); setShowModal(true); dispatch(getAllAlisleAsync(item.shelfCode)) }}
+                                            style={{
+                                                flexDirection: 'row', justifyContent: 'space-between',
+                                                borderRadius: 8, borderWidth: 1, padding: 12, borderColor: '#94A3B8',
+                                                alignItems: 'center', marginBottom: '4%', 
+                                                 backgroundColor: selectedItemShelfList === item.shelfName ? '#118EB1' : 'transparent',
+                                           
+                                            }}>
+                                            <Text style={{ color: selectedItemShelfList === item.shelfName ? "white" :'#118EB1', fontSize: 18, }}>{item.shelfName}</Text>
 
-                                            <TouchableOpacity onPress={() => handleDeleteItem(item.shelfName)}>
+                                            <TouchableOpacity >
                                                 <Feather
-                                                    name="trash-2"
+                                                    name="arrow-right"
                                                     size={20}
                                                     color={'black'}
                                                     style={styles.searchIcon}
@@ -249,9 +266,10 @@ const Assign = ({ navigation }: any) => {
                             />
                         </View>
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => {
-                            if (selectedItem) {
+                            if (selectedItem ) {
+
                                 navigation.navigate('scanAssignQr', {
                                     aisleId: aisleId,
                                     aisleCode: aisleCode,
@@ -266,18 +284,77 @@ const Assign = ({ navigation }: any) => {
                                     textBody: 'Please select an aisle before assigning a QR code',
                                 })
                             }
-                        }} style={{ backgroundColor: 'white', borderWidth: 2, borderColor: '#005D7F', width: '98%', padding: '4%', borderRadius: 10, elevation: 3, marginBottom: '10%' }}>
+                        }} style={{ backgroundColor: 'white', borderWidth: 2, borderColor: '#005D7F', width: '98%', padding: '4%', borderRadius: 10, elevation: 3,  }}>
                         <Text style={{ color: '#005D7F', fontWeight: '600', fontSize: 17, justifyContent: 'center', textAlign: 'center' }}>Assign Qr code -</Text>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (selectedItem) {
+                                // const isAlredyAssign = selectedAisle.imageLogs;
+
+                                if (isAlredyAssign && isAlredyAssign.length >= 1) {
+                                    // If images are already assigned, prompt the user for reassignment
+                                    Alert.alert(
+                                        'Reassign Barcodes',
+                                        'Do you want to reassign the Code?',
+                                        [
+                                            {
+                                                text: 'No',
+                                                style: 'cancel',
+                                            },
+                                            {
+                                                text: 'Yes',
+                                                onPress: () => {
+                                                    navigation.navigate('scanAssignQr', {
+                                                        aisleId: aisleId,
+                                                        aisleCode: aisleCode,
+                                                        shelfCode: shelfCode,
+                                                    });
+                                                },
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    );
+                                } else {
+                                    // No images are already assigned, proceed with navigation
+                                    navigation.navigate('scanAssignQr', {
+                                        aisleId: aisleId,
+                                        aisleCode: aisleCode,
+                                        shelfCode: shelfCode,
+                                    });
+                                }
+                            } else {
+                                // Show an alert if dataAisleId or dataAisleId._id is null
+                                Toast.show({
+                                    type: ALERT_TYPE.WARNING,
+                                    title: 'Warning',
+                                    textBody: 'Please select an aisle before assigning a QR code',
+                                });
+                            }
+                        }}
+                        style={{
+                            backgroundColor: 'white',
+                            borderWidth: 2,
+                            borderColor: '#005D7F',
+                            width: '98%',
+                            padding: '4%',
+                            borderRadius: 10,
+                            elevation: 3,
+                        }}
+                    >
+                        <Text style={{ color: '#005D7F', fontWeight: '600', fontSize: 17, justifyContent: 'center', textAlign: 'center' }}>
+                            Assign Qr code -
+                        </Text>
                     </TouchableOpacity>
 
 
                 </View>
                 <Modal isVisible={showModal} animationInTiming={600} style={styles.modal} onBackdropPress={hideModal}
                     onBackButtonPress={hideModal}>
-                    <View style={[styles.modalContainer, { height: '65%', }]}>
+                    <View style={[styles.modalContainer, { height: '77%', }]}>
 
 
-                        <View style={{ ...styles.searchBarContainer, width: '90%', justifyContent: 'center', }}>
+                        {/* <View style={{ ...styles.searchBarContainer, width: '90%', justifyContent: 'center', }}>
                             <Feather
                                 name="search"
                                 size={18}
@@ -301,30 +378,46 @@ const Assign = ({ navigation }: any) => {
                                     style={styles.searchIcon}
                                 />
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
+                        <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 25, textDecorationLine: 'underline' }}>Aisle List </Text>
 
-                        <SafeAreaView style={{ width: '100%', maxHeight: '90%' }}>
+                        <SafeAreaView style={{ width: '100%', maxHeight: '90%', marginBottom: '20%' }}>
 
 
-                            <FlatList
-                                data={aisleName}
-                                renderItem={({ item }) => (
-                                    // console.log(item),
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', padding: 3, marginTop: '2%' }}>
-                                        <Text>{item}</Text>
-                                        <RadioButton.Android // Use RadioButton.Android for Android platform
-                                            value={item}
-                                            status={selectedItem === item ? 'checked' : 'unchecked'} // Check or uncheck the RadioButton based on the selectedItem
-                                            onPress={() => handleSelect(item)} // Handle selection
-                                            style={{}}
-                                        />
-                                    </View>
-                                )}
-                            />
-                            <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '90%', elevation: 3, marginTop: '50%' }}>
-                            <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 20 }}>Done</Text></TouchableOpacity>
+                            {aisleName.length === 0 ? (
+                                <View style={{ justifyContent: 'center', margin: '5%' }}>
+                                    <Text style={{ color: 'black', fontSize: 14 }}>No aisle present :) select other shelf </Text>
+                                </View>
+                            ) : (
+                                <FlatList
+                                    data={aisleName}
+                                    style={{ margin: '4%' }}
+                                    renderItem={({ item }) => (
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 3, marginTop: '2%' }}>
+                                            <Feather
+                                                name="arrow-right-circle"
+                                                size={20}
+                                                color={'black'}
+                                            // style={styles.searchIcon}
+                                            />
+                                            <Text style={{ color: 'black', fontSize: 17 }}>{item}</Text>
+                                            <RadioButton.Android
+                                                value={item}
+                                                status={selectedItem === item ? 'checked' : 'unchecked'}
+                                                onPress={() => handleSelect(item)}
+                                            />
+                                        </View>
+                                    )}
+                                />
+                            )}
+
+
+
                         </SafeAreaView>
-                        
+                        <TouchableOpacity onPress={handleButton} style={{ borderRadius: 4, paddingHorizontal: '15%', paddingVertical: '3%', backgroundColor: '#E2F6F7', width: '100%', elevation: 3, }}>
+                            <Text style={{ color: '#005D7F', textAlign: 'center', fontWeight: '700', fontSize: 20 }}>Done</Text>
+                        </TouchableOpacity>
+
 
                     </View>
 
@@ -436,6 +529,7 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         fontFamily: 'Inter-Regular',
         padding: 0,
+        color: 'black'
     },
     searchAssistContainer: {
         backgroundColor: 'white',
@@ -448,7 +542,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         // maxHeight: 350
-        
+
     }, listItem: {
         padding: 10,
         borderBottomWidth: 1,

@@ -70,13 +70,16 @@ const Dashboard = ({ navigation }: any) => {
              <View style={{ top:'65%',marginRight:'3%', alignItems:'flex-end'}}>
 
             
-            <TouchableOpacity style={{backgroundColor:'#005D7F', padding:'3%', width:'52%', borderRadius:10,justifyContent:'flex-end', alignItems:'flex-end'}} onPress={()=>
-            Toast.show({
-                type: ALERT_TYPE.WARNING,
-                title: "Working on:)",
-                textBody: 'Will update Soon',
-              })}>
-                <Text style={{color:'white', fontSize:15}}>Reconciliation requests    +</Text>
+            <TouchableOpacity style={{backgroundColor:'#005D7F', padding:'3%', width:'52%', borderRadius:10,justifyContent:'flex-end', alignItems:'flex-end'}} 
+            onPress={()=>navigation.navigate("Reconciliation")
+            // Toast.show({
+            //     type: ALERT_TYPE.WARNING,
+            //     title: "Working on:)",
+            //     textBody: 'Will update Soon',
+            //   })
+        }
+            >
+                <Text style={{color:'white', fontSize:15}}>Reconciliation requests  +</Text>
 
 
             </TouchableOpacity>

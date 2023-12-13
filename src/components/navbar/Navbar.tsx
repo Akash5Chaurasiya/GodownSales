@@ -38,7 +38,7 @@ const Navbar = () => {
                                 
                                 <TouchableOpacity onPress={() => actions.logout() } >
                                     <Image source={authData.image} resizeMode="cover" style={{width: Dimensions.get('window').height * 0.058,height: Dimensions.get('window').height * 0.058,alignSelf:'flex-end'}} />
-                                    <Text style={{color:'#005D7F', marginBottom:'20%', textAlignVertical:'center'}}>{authData.name}</Text>
+                                    <Text style={{color:'#005D7F', marginBottom:'20%', textAlignVertical:'center'}}>Logout</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
