@@ -41,7 +41,7 @@ const PurchasePage = ({navigation}:any) => {
           </View>
           <Text style={{ fontSize: 14, fontWeight: '500', color: '#172B4D' }}>{formattedTime}</Text>
 
-          <Text className='ml-2 bg-blue-200 w-10 h-5 rounded-md font-extrabold text-black text-center'>IRON</Text>
+          <Text className='ml-2 bg-blue-200 w-10 h-5 rounded-md font-extrabold text-black text-center'>{datafromApi?.godown?.godownCode}</Text>
 
 
         </View>
@@ -49,11 +49,11 @@ const PurchasePage = ({navigation}:any) => {
         <View className='flex flex-row justify-between mx-5'>
           <View className='flex flex-col justify-center'>
             <Text className='text- text-base font-semibold text-[#005D7F]'>Purchase Number</Text>
-            <Text className='text- text-base font-normal text-[#172B4D]'>000000000000000</Text>
+            <Text className='text- text-base font-normal text-[#172B4D]'>{datafromApi?.purchaseOrder[0]?.orderNumber}</Text>
           </View>
           <View className='flex flex-col justify-center'>
             <Text className='text- text-base font-semibold text-[#005D7F]'>Bill Number</Text>
-            <Text className='text- text-base font-normal text-[#172B4D]'>0193456</Text>
+            <Text className='text- text-base font-normal text-[#172B4D]'>0000000</Text>
           </View>
         </View>
 
@@ -68,11 +68,22 @@ const PurchasePage = ({navigation}:any) => {
 
         <View>
           <TouchableOpacity style={{width:'90%', margin:'6%'}}>
+          
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+              <View className='flex flex-col'>
             <Text className='font-semibold text-[#005D7F] text-lg'>Raw Marteial </Text>
-            <View style={{flexDirection:'row'}}>
+            <View className='flex flex-row'>
+
+           
               <Text className='text- text-base font-semibold text-[#005D7F]'>Item Name:</Text>
               <Text className='text- text-base font-normal text-[#172B4D]'> {datafromApi.itemData[0].item.name}</Text>
+              </View>
+              </View>
+              
+              <Image source={{ uri: datafromApi.qrCode }} style={styles.photo} />
+
             </View>
+
             <View className='flex flex-row gap-1 justify-around my-3 border border-0.5 rounded-lg p-2 '>
             <View>
               <Text className='text- text-base font-bold text-[#005D7F]'>HSNCode</Text>
@@ -98,9 +109,9 @@ const PurchasePage = ({navigation}:any) => {
         <TouchableOpacity style={{ width: '90%', backgroundColor: '#005D7F', padding: '4%', borderRadius: 9 }} onPress={()=>navigation.navigate("ScanPurchaseAisle")}>
           <Text style={{ color: '#fff', fontWeight: '600', fontSize: 20, textAlign: 'center' }}>Unload -</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ width: '90%', backgroundColor: '#fff', padding: '4%', borderRadius: 9, borderWidth: 1, borderColor: '#005D7F' }}>
+        {/* <TouchableOpacity style={{ width: '90%', backgroundColor: '#fff', padding: '4%', borderRadius: 9, borderWidth: 1, borderColor: '#005D7F' }}>
           <Text style={{ color: '#005D7F', fontWeight: '600', fontSize: 20, textAlign: 'center' }}>Unload another aisle</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
 
       </View>

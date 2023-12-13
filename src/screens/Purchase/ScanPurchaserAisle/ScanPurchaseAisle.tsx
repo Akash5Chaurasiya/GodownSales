@@ -46,7 +46,9 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
   useEffect(() => {
     checkCameraPermission();
   }, []);
-
+  
+  
+ 
 
   const checkCameraPermission = async () => {
     const status = await Camera.getCameraPermissionStatus();
@@ -75,10 +77,10 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
             // console.log("---------------------->", datapassing)
             dispatch(scanAlisleAsync(datascan)).then((res:any)=>{
               if(res.payload.status){
-               Dialog.show({
+               Toast.show({
                   type: ALERT_TYPE.SUCCESS,
                   title: "Success",
-                  textBody: 'Qr assign Successfully"',
+                  textBody: ' Aisle Qr scan Successfully"',
                 })
                 navigation.navigate('PurchaseConfirmAisle')
               }
@@ -122,7 +124,7 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
   }, []);
   
   const handleBackButton = () => {
-    navigation.navigate("assign");
+    navigation.navigate("PurchasePage");
     return true;
   };
 // console.log("haspesmm", hasPermission)
@@ -159,7 +161,11 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
           audio={false}
           enableZoomGesture
         />
+  {/* <View style={{justifyContent:'center', alignItems:'center',top:'20%' }}>
 
+
+<Text style={{color:'white', fontSize:25, fontWeight:'800', }}>Scan QR Code Of Purchase</Text>
+</View> */}
 
       
         <RNHoleView

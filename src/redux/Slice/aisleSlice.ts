@@ -31,7 +31,7 @@ export const scanAlisleAsync:any = createAsyncThunk(
         try{
             console.log("seach", item)
             const response:any = await scanAisle(item) ;
-            // console.log("ressssss", response)
+            console.log("ressssss", response)
             return response;
 
         }
@@ -62,7 +62,7 @@ export const imageUploadAisleAsync:any = createAsyncThunk(
         try{
             console.log("upload testing------------",formData)
             const response:any = await imageUploadAisle(formData) ;
-            // console.log("ressssss", response)
+            console.log("ressssss", response)
             return response;
         }
         catch(err){
@@ -72,11 +72,11 @@ export const imageUploadAisleAsync:any = createAsyncThunk(
 )
 export const addAisleImageAsync:any = createAsyncThunk(
     "addAisleImageAsync",
-    async(datapassing)=>{
+    async(dataString)=>{
         try{
-            console.log("addimageeee testing-------------",datapassing)
-            const response:any = await addAisleImage(datapassing) ;
-            // console.log("ressssss", response)
+            console.log("addimageeee testing-------------",dataString)
+            const response:any = await addAisleImage(dataString) ;
+            console.log("ressssss while adding ----", response)
             return response;
         }
         catch(err){
@@ -103,8 +103,8 @@ export const AisleSlice = createSlice({
             state.status='loading'
         })
         .addCase(scanAlisleAsync.fulfilled,(state, action)=>{
-            state.status='fulfilled',
-           state.scanaisle = action.payload
+            state.status='idle',
+           state.scanaisle = action.payload.data
            console.log("on scan slice", state.scanaisle)
            
            
@@ -123,13 +123,13 @@ export const AisleSlice = createSlice({
         .addCase(imageUploadAisleAsync.fulfilled,(state, action)=>{
             state.status='idle',
            state.upploadaisleImage = action.payload
-           console.log("on assignslice", state.upploadaisleImage)
+           console.log("responsee--------------------------------", state.upploadaisleImage)
         })
         .addCase(addAisleImageAsync.pending,(state)=>{
             state.status='loading'
         })
         .addCase(addAisleImageAsync.fulfilled,(state, action)=>{
-            state.status='fulfilled',
+            state.status='idle',
            state.addImageaisle = action.payload
            console.log("on assignslice", state.addImageaisle)
         })

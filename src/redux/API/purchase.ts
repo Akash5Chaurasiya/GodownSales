@@ -1,5 +1,5 @@
 import axios from "axios";
-import {purchaserSlipApiPath, purchaseQrScanApiPath} from '../apiRoutes'
+import {purchaserSlipApiPath, purchaseQrScanApiPath, purchaseVerificationApiPath} from '../apiRoutes'
 
 export const getAllPurchaseSlip = async()=>{
 
@@ -27,7 +27,24 @@ export const purchaseQrScan = async(datacode:any)=>{
 
     }
     catch(err){
-        console.error("Error during QR scan:", err.message);
+        // console.error("Error during QR scan:", err.message);
+        return err;
+    }
+}
+
+export const purchaseVerificationSlip = async(dataString:any)=>{
+    
+    try{
+        const {data} = await axios.post(`${purchaseVerificationApiPath}/${dataString.purchaseSlipId}`, 
+         { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleId:dataString.aisleID}
+        ,{
+            withCredentials:true
+        })
+        console.log("verification sales ", data)
+        return data
+
+    }
+    catch(err){
         return err;
     }
 }

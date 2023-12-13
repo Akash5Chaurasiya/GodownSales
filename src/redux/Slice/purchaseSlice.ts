@@ -1,12 +1,13 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {getAllPurchaseSlip, purchaseQrScan} from '../API/purchase'
+import {getAllPurchaseSlip, purchaseQrScan, purchaseVerificationSlip} from '../API/purchase'
 
 
 
 const initialState ={
     purchaseSlip:[],
     purchaseQrScanData:[],
+    purchaseVerification:[],
     status:'idle',
 }
 
@@ -39,7 +40,20 @@ export const purchaseQrScanAsync :any = createAsyncThunk(
     }
 )
 
-  
+export const purchaseVerificationSlipAsync:any = createAsyncThunk(
+    "purchaseVerificationSlipAsync",
+    async(dataString)=>{
+        try{
+            console.log("vvvvvvvvvvvvvvvvv-------------",dataString)
+            const response:any = await purchaseVerificationSlip(dataString) ;
+            console.log("verifcation on sales slice  ----", response)
+            return response;
+        }
+        catch(err){
+            return err
+        }
+    }
+)
 
 export const PurchaseSlice =  createSlice({
     name:'PurchaseSlice',
@@ -62,6 +76,14 @@ export const PurchaseSlice =  createSlice({
             state.status ='idle',
             state.purchaseQrScanData= action.payload.data
             console.log("--------------------------post scaan", state.purchaseQrScanData)
+        })
+        .addCase(purchaseVerificationSlipAsync.pending, (state)=>{
+            state.status='loading'
+        })
+        .addCase(purchaseVerificationSlipAsync.fulfilled, (state, action)=>{
+            state.status= 'idle',
+            state. purchaseVerification= action.payload
+            console.log("purchase V Payload--------------------", state.purchaseVerification)
         })
        
 

@@ -95,7 +95,7 @@ console.log("successs", successcoming.status)
                 Toast.show({
                   type: ALERT_TYPE.DANGER,
                   title: "Error",
-                  textBody: res.payload.message,
+                  textBody: "This barcode is already assign! Please try again",
                 })
                 navigation.navigate('assign')
               }
