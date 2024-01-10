@@ -4,19 +4,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useAuthContext } from '../../../auth/authorization/AuthGuard';
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import { imageUploadAisleAsync } from '../../../redux/Slice/aisleSlice';
-import { purchaseVerificationSlipAsync } from '../../../redux/Slice/purchaseSlice';
+import { purchaseAddImageAsync,purchaseQrScanAsync} from '../../../redux/Slice/purchaseSlice';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import Feather from 'react-native-vector-icons/Feather';
 
-const PurchaseVerification = ({navigation}:any) => {
+const PurchaseVerification = ({navigation, route}:any) => {
+  const {aisleID, dataState} = route.params || {};
+  console.log(aisleID);
+  console.log("dataState on verfication ", dataState)
     const { authData }: any = useAuthContext();
      const userID = authData.userId
+    const dispatch = useDispatch();
 
-     const dispatch = useDispatch();
-
-  const camera = useRef(null);
-
-  const devices = useCameraDevices();
+  const camera = useRef<any>(null);
+ const devices = useCameraDevices();
   const device = devices.back;
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleQuantity, setIsVisibleQuantity] = useState(false);
@@ -25,23 +26,41 @@ const PurchaseVerification = ({navigation}:any) => {
   const [showPhoto, setShowPhoto] = useState(false);
   const [text, setText] = useState<any>()
   const [textQuantity, setTextQuantity] = useState<any>()
-  const image = useSelector((state: any) => state.purchase.purchaseQrScanData)
-  console.log("image selector-------------------", image)
+  const [torchOn, setTorchOn] = useState<any>(false);
+  // console.log("Ttttttttttttttttttttttttttttt", torchOn)
+  const flashMode = torchOn ? 'on' : 'off'; 
+    const toggleFlashlight = () => {
+      
+      const newTorchState = !torchOn; // Toggle the torchOn state
+      setTorchOn(newTorchState);
+    };
+  
+
   const imageString1 = useSelector((state: any) => state.aisle.upploadaisleImage)
   const imageString = imageString1[0];
-
   console.log("checkkkkeckkeckk", imageString)
 
   const aisleCodeData = useSelector((state: any) => state.aisle.scanaisle)
   const aisleCode = aisleCodeData.aisleCode;
-  const aisleID = aisleCodeData._id;
-  console.log("------------tttttttttttttttttttt", aisleID)
+
+ 
 
 
-  
   const PurchaseData = useSelector((state:any)=>state.purchase.purchaseQrScanData);
-  const  purchaseSlipId = PurchaseData._id
+  const  purchaseSlipId = PurchaseData?._id
   console.log("cccccccccccccccccccccc, ",purchaseSlipId )
+  // let imageLog = PurchaseData.imageLogs.length;
+  // console.log("________",imageLog)
+  // const aisleID = PurchaseData.imageLogs[0].aisle
+  // console.log("------------tttttttttttttaisle iddd", aisleID)
+
+  const activeTime = PurchaseData?.activeTime; 
+ console.log("apii", activeTime)
+  const startTime = new Date(activeTime)
+  console.log("Aaaaaaaaa-------------", startTime)
+
+
+
   useEffect(() => {
     async function getPermission() {
       const permission = await Camera.requestCameraPermission();
@@ -54,7 +73,7 @@ const PurchaseVerification = ({navigation}:any) => {
 
     try {
       if (camera.current !== null && showCamera) {
-        const photo = await camera.current.takePhoto({});
+        const photo:any= await camera.current.takePhoto({});
         const result = await fetch(`file://${photo.path}`)
         // const data = await result.blob();
         // console.log("------------------------------------------", data)
@@ -67,7 +86,6 @@ const PurchaseVerification = ({navigation}:any) => {
       console.error('Error capturing photo:', error);
     }
   };
-  console.log("imagesource------------------------", ImageSource)
 
   console.log("text", text)
   const handleConfirm = () => {
@@ -90,7 +108,7 @@ const PurchaseVerification = ({navigation}:any) => {
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
-              textBody: 'Are you sure :)if yess, confirm again',
+              textBody: 'Are you sure ',
             })
 
 
@@ -100,8 +118,9 @@ const PurchaseVerification = ({navigation}:any) => {
             Toast.show({
               type: ALERT_TYPE.DANGER,
               title: "warn",
-              textBody: "Upload failed. Response payload is empty",
+              textBody: "Upload failed. Response payload is empty!Try again:)",
             })
+            navigation.navigate("PurchaseVSlip");
 
           }
 
@@ -110,30 +129,85 @@ const PurchaseVerification = ({navigation}:any) => {
 
     }
   };
+
+  function formatTimeDifference(minutes:any) {
+    const days = Math.floor(minutes / (24 * 60));
+    const hours = Math.floor((minutes % (24 * 60)) / 60);
+    const remainingMinutes = minutes % 60;
+  
+    let formattedDifference = '';
+    if (days > 0) {
+      formattedDifference += `${days} day${days > 1 ? 's' : ''} `;
+    }
+    if (hours > 0) {
+      formattedDifference += `${hours} hour${hours > 1 ? 's' : ''} `;
+    }
+    if (remainingMinutes > 0) {
+      formattedDifference += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+    }
+  
+    return formattedDifference.trim();
+  }
+  
   const handleRetake = () => {
     setShowCamera(true);
     setShowPhoto(false);
     setImageSource(null);
   };
+  // const endTime = new Date();
+  
+  // console.log("endtime-----------", endTime)
+  // const timeDifference = endTime.getTime() - startTime.getTime(); 
+
+  // const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+  // const formattedTimeDifference = formatTimeDifference(minutesDifference);
+  // console.log("Formatted Time Difference:----", formattedTimeDifference)
+  // console.log("BBBbbbbbbbbbbbbbbbbb",minutesDifference, timeDifference )
 
   const handleImageConfirmQuantity = () => {
-    if (imageString && textQuantity) {
-      const dataString = { imageString, textQuantity,  userID, aisleID , purchaseSlipId}
-      console.log("newcheck------------", dataString)
-      dispatch(purchaseVerificationSlipAsync(dataString)).then((res: any) => {
-        console.log("------------", res.payload)
+    if (imageString ) {
+
+
+      const dataStringItemAdd = { imageString, aisleID , purchaseSlipId}
+      console.log("newcheck------------", dataStringItemAdd)
+      dispatch(purchaseAddImageAsync(dataStringItemAdd)).then((res: any) => {
+        console.log("------------", typeof res.payload.status)
         if (res.payload.status) {
-        console.log("cclickkkk")
+          dispatch(purchaseQrScanAsync(dataState))
+          const endTime = new Date();
+  
+          console.log("endtime-----------", endTime)
+          const timeDifference = endTime.getTime() - startTime.getTime(); 
+        
+          const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+          const formattedTimeDifference = formatTimeDifference(minutesDifference);
+          console.log("Formatted Time Difference:----", formattedTimeDifference)
+          console.log("BBBbbbbbbbbbbbbbbbbb",minutesDifference, timeDifference )
+
           setIsVisibleQuantity(false);
-          setTextQuantity(" ");
-          Dialog.show({
-            type: ALERT_TYPE.SUCCESS,
-            title: "Success",
-            textBody: 'Successfully Verified  Aisle',
-          })
+          
 
-          navigation.navigate("Purchase");
+            
+            Dialog.show({
+              type: ALERT_TYPE.SUCCESS,
+              title: `Total time taken=${formattedTimeDifference}`,
+              textBody: "Successfuly Verified",
+            })
+            navigation.navigate("PurchaseVImageLog", {dataState:dataState});
 
+
+          
+        
+        //  else{
+
+        //   Dialog.show({
+        //     type: ALERT_TYPE.WARNING,
+        //     title: "Scan Again",
+        //     textBody: 'Click other photo',
+        //   })
+         
+        //  }
+             
 
         }
         else {
@@ -143,7 +217,7 @@ const PurchaseVerification = ({navigation}:any) => {
             title: "Error",
             textBody: res.payload.message,
           })
-          navigation.navigate("Purchase");
+          navigation.navigate("PurchaseVSlip");
         }
       })
 
@@ -152,8 +226,7 @@ const PurchaseVerification = ({navigation}:any) => {
   }
 
     if (!device) {
-        // console.error('Camera device not available.');
-        return null; // or handle the error accordingly
+        return null; 
       }
       return (
         <View style={{ flex: 1 }}>
@@ -166,11 +239,26 @@ const PurchaseVerification = ({navigation}:any) => {
                 device={device}
                 isActive={showCamera}
                 photo={true}
+                torch= {flashMode}
               /></>
           )}
           {!showPhoto && (
             <>
-              <Text style={{ color: "white", fontWeight: '600', justifyContent: 'center', fontSize: 22, margin: '25%' }}>Capture Verification Photo</Text>
+             <View className='flex flex-row' style={{alignItems:'center', justifyContent:'space-around', marginTop:'30%'}}>
+        <Text style={{ color: "white", fontWeight: '600',  fontSize: 18,  }}>Capture Verification Photo</Text>
+        <View >
+          <TouchableOpacity onPress={toggleFlashlight } style={{flexDirection:'column', alignItems:'center'}}>
+            <Text style={{color:'white', fontWeight:'500'}}>Flash Light</Text>
+          <Feather
+                name={torchOn ? 'zap' : 'zap-off'}
+             
+                size={22}
+                color={'white'}
+              />
+          </TouchableOpacity>
+        </View>
+        </View>
+              {/* <Text style={{ color: "white", fontWeight: '600', justifyContent: 'center', fontSize: 22, margin: '25%' }}>Capture Verification Photo</Text> */}
               <View style={styles.confirmButtonContainer}>
     
                 <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
@@ -212,18 +300,8 @@ const PurchaseVerification = ({navigation}:any) => {
           >
             <View style={styles.modalContainer1}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Enter The Quantity</Text>
-                {/* <Text style={styles.label}>hiii</Text> */}
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    style={styles.input}
-                    value={textQuantity}
-                    onChangeText={(text) => setTextQuantity(text)}
-                    placeholder="Enter the quantity"
-    
-                  />
-    
-                </View>
+                <Text style={styles.modalTitle}>Are you sure :) </Text>
+               
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.cancelButton}
@@ -297,7 +375,7 @@ const styles = StyleSheet.create({
     modalContent: {
       backgroundColor: 'white',
       borderRadius: 8,
-      padding: 20,
+      padding: 40,
       alignItems: 'center',
       margin: '5%'
     },
@@ -336,9 +414,9 @@ const styles = StyleSheet.create({
     //     padding: 16,
     // },
     modalTitle: {
-      fontSize: 20,
+      fontSize: 25,
       fontWeight: '700',
-      marginBottom: 10,
+      marginBottom: 20,
       textAlign: 'center',
       color: '#000',
       borderBottomWidth: 1

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { imageUploadAisleAsync, addAisleImageAsync, scanAlisleAsync } from '../../../redux/Slice/aisleSlice';
 import { useAuthContext } from '../../../auth/authorization/AuthGuard';
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
+import { purchaseVerificationSlipAsync } from '../../../redux/Slice/purchaseSlice';
 const PurchaseAislePhoto= ({ navigation, route }: any) => {
   // const route: any = useRoute();
   const { authData }: any = useAuthContext();
@@ -16,7 +17,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
 
   const dispatch = useDispatch();
 
-  const camera = useRef(null);
+  const camera = useRef<any>(null);
 
   const devices = useCameraDevices();
   const device = devices.back;
@@ -25,7 +26,17 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
   const [showPhoto, setShowPhoto] = useState(false);
   const [text, setText] = useState<any>()
   const [isVisible, setIsVisible] = useState(false);
+  const [textQuantity, setTextQuantity] = useState<any>()
   const image = useSelector((state: any) => state.purchase.purchaseQrScanData)
+  const [isFocused, setIsFocused] = useState(true);
+  const [torchOn, setTorchOn] = useState<any>(false);
+console.log("Ttttttttttttttttttttttttttttt", torchOn)
+const flashMode = torchOn ? 'on' : 'off'; 
+  const toggleFlashlight = () => {
+    
+    const newTorchState = !torchOn; // Toggle the torchOn state
+    setTorchOn(newTorchState);
+  };
 
   console.log("image selector-------------------", image)
   const imageString1= useSelector((state: any) => state.aisle.upploadaisleImage)
@@ -33,6 +44,13 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
   console.log("checkkkkeckkeckk", imageString)
   const aisleCodeData = useSelector((state:any)=> state.aisle.scanaisle)
       const aisleCode = aisleCodeData.aisleCode;
+      const aisleID = aisleCodeData._id;
+      const PurchaseData = useSelector((state:any)=>state.purchase.purchaseQrScanData);
+  const  purchaseSlipId = PurchaseData._id
+  console.log("cccccccccccccccccccccc, ",purchaseSlipId )
+  const quantityApi = PurchaseData.itemData[0].quantity;
+  console.log("quantityApi------------- ",quantityApi)
+
 
   useEffect(() => {
     async function getPermission() {
@@ -46,7 +64,11 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
 
     try {
       if (camera.current !== null && showCamera) {
-        const photo = await camera.current.takePhoto({});
+        // const flashMode = torchOn ? 'on' : 'off'; s
+        const photo = await camera.current.takePhoto({
+          // // flash: 'on' 
+          // flash: flashMode,
+        });
         const result = await fetch(`file://${photo.path}`)
         // const data = await result.blob();
         // console.log("------------------------------------------", data)
@@ -98,11 +120,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
           }
 
         })
-        // .catch((error: any) => {
-        //   // Handle the error here
-        //   console.error('Upload error:----------------------', error);
-        //   Alert.alert("Upload failed. Check the console for details.");
-        // });
+     
 
     }
   };
@@ -111,7 +129,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
 
 
 
-    if (imageString && text) {
+    if (imageString && text && textQuantity<=quantityApi) {
       const dataString = { imageString, text, aisleCode, userID }
       console.log("newcheck------------", dataString)
       dispatch(addAisleImageAsync(dataString)).then((res: any) => {
@@ -126,7 +144,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
             textBody: 'Successfully Upload Image',
           })
 
-          navigation.navigate('PurchaseVerification');
+          // navigation.navigate('PurchaseVerification');
 
 
         }
@@ -139,6 +157,44 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
           })
           navigation.navigate('Purchase');
         }
+      })
+      const dataStringItemAdd = { textQuantity,  userID, aisleID , purchaseSlipId}
+     console.log("in purchase page", dataStringItemAdd)
+      dispatch(purchaseVerificationSlipAsync(dataStringItemAdd)).then((res: any) => {
+        console.log("------------", res.payload)
+        if (res.payload.status) {
+      
+         
+          setTextQuantity(" ");
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Success",
+            textBody: 'Successfully Add Item ',
+          })
+
+          navigation.navigate("Purchase");
+
+
+        }
+        else {
+          
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: res.payload.message,
+          })
+          navigation.navigate("Purchase");
+        }
+      })
+
+    }
+
+    else{
+      setTextQuantity(" ");
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: "warn",
+        textBody: "Enter Qty should less than Original Qty:)",
       })
 
     }
@@ -166,16 +222,36 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
           device={device}
           isActive={showCamera}
           photo={true}
+          torch= {flashMode}
+         
         />
       )}
       {!showPhoto && (
         <>
-         <Text style={{ color: "white", fontWeight: '600', justifyContent: 'center', fontSize: 22, margin: '25%' }}>Capture Aisle Photo </Text>
+        <View className='flex flex-row' style={{alignItems:'center', justifyContent:'space-around', marginTop:'30%'}}>
+        <Text style={{ color: "white", fontWeight: '600',  fontSize: 22,  }}>Capture Aisle Photo </Text>
+        <View style={styles.flashlightButtonContainer}>
+          <TouchableOpacity onPress={toggleFlashlight } style={{flexDirection:'column', alignItems:'center'}}>
+            <Text style={{color:'white', fontWeight:'500'}}>Flash Light</Text>
+          <Feather
+                name={torchOn ? 'zap' : 'zap-off'}
+             
+                size={22}
+                color={'white'}
+              />
+          </TouchableOpacity>
+        </View>
+        </View>
+      
+
+         
         <View style={styles.confirmButtonContainer}>
           <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
             <Text style={styles.confirmButtonText}>Capture Photo</Text>
           </TouchableOpacity>
         </View>
+        
+        {/* </View> */}
         </>
       )}
       {showPhoto && (
@@ -223,7 +299,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
       >
         <View style={styles.modalContainer1}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Enter The Reason</Text>
+            {/* <Text style={styles.modalTitle}>Enter The Reason and quantity</Text> */}
             {/* <Text style={styles.label}>hiii</Text> */}
             <View style={styles.inputContainer}>
               <TextInput
@@ -233,8 +309,22 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
                 placeholder="Enter reason"
 
               />
+              
+               
 
             </View>
+            <View style={styles.inputContainer}>
+            <TextInput
+            style={{...styles.input, marginTop:'4%'}}
+            value={textQuantity}
+            onChangeText={(text) => setTextQuantity(text)}
+            placeholder="Enter  Quantity"
+
+          />
+          <Text style={styles.remainingText}>
+                                    /{quantityApi}
+                                </Text>
+          </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -253,6 +343,7 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
           </View>
         </View>
       </Modal>
+   
     </View>
   )
 }
@@ -262,6 +353,18 @@ const PurchaseAislePhoto= ({ navigation, route }: any) => {
 export default PurchaseAislePhoto
 
 const styles = StyleSheet.create({
+  flashlightButtonContainer: {
+    // position: 'absolute',
+    // bottom: 20,
+    // width: '100%',
+    // alignItems: 'center',
+    // marginTop:'60%'
+  },
+  flashlightButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   confirmButtonContainer: {
     position: 'absolute',
     bottom: 0,
@@ -371,4 +474,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
   },
+  remainingText: {
+    fontSize: 20,
+    marginLeft: 8,
+    marginRight:14,
+    color: 'gray',
+},
 })

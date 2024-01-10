@@ -1,41 +1,38 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import BarcodeScan from '../../../components/BarcodeScan/BarcodeScan'
-import { Dispatch } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import { scanAlisleAsync} from '../../../redux/Slice/aisleSlice'
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
 const ReconScanQr = ({navigation,route}:any) => {
-  const {aisleCode} = route.params
+  const {aisleCode, reconID} = route.params
   
-  console.log("coming route param s", aisleCode)
+  console.log("coming route param s", aisleCode,reconID)
+
   const dispatch = useDispatch();
   const dataAfterScan = useSelector((state:any)=>state.aisle.scanaisle)
-  const AisleCodeFromscan = dataAfterScan.aisleCode;
+  const AisleCodeFromscan = dataAfterScan;
   console.log("scanAilse ", AisleCodeFromscan)
 
   const handleBarcodeScanned = (barcode: string) => {
     const barcodeData = barcode;
   console.log("barcode", barcodeData)
     dispatch(scanAlisleAsync(barcodeData)).then((res:any)=>{
-      console.log("------------todayy 13-12", res.payload)
+      console.log("------------todayy 13-12", res.payload.data.aisleCode)
      
 
-      if(AisleCodeFromscan === aisleCode){
+      if(res.payload.data.aisleCode === aisleCode){
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
           title: "Success",
           textBody: 'Successfully barcode scan',
         })
-        navigation.navigate('ReconAisleDes')
+        navigation.navigate('ReconAisleDes', {reconID:reconID})
 
       }
       else{
-        // Alert.alert("check your barcode !!")
-        // cons
-
-        Toast.show({
+     Toast.show({
           type: ALERT_TYPE.DANGER,
           title: "Error",
           textBody: "Barcode does not match the aisle code. Please check your barcode.",

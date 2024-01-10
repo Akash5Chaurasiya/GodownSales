@@ -1,13 +1,14 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {getAllPurchaseSlip, purchaseQrScan, purchaseVerificationSlip} from '../API/purchase'
+import {getAllPurchaseSlip, purchaseQrScan, purchaseVerificationSlip,purchaseAddImage} from '../API/purchase'
 
 
 
 const initialState ={
     purchaseSlip:[],
-    purchaseQrScanData:[],
+    purchaseQrScanData:{},
     purchaseVerification:[],
+    purchaseAddImageData:[],
     status:'idle',
 }
 
@@ -42,11 +43,25 @@ export const purchaseQrScanAsync :any = createAsyncThunk(
 
 export const purchaseVerificationSlipAsync:any = createAsyncThunk(
     "purchaseVerificationSlipAsync",
-    async(dataString)=>{
+    async(dataStringItemAdd)=>{
         try{
-            console.log("vvvvvvvvvvvvvvvvv-------------",dataString)
-            const response:any = await purchaseVerificationSlip(dataString) ;
+            console.log("vvvvvvvvvvvvvvvvv-------------",dataStringItemAdd)
+            const response:any = await purchaseVerificationSlip(dataStringItemAdd) ;
             console.log("verifcation on sales slice  ----", response)
+            return response;
+        }
+        catch(err){
+            return err
+        }
+    }
+)
+export const purchaseAddImageAsync:any = createAsyncThunk(
+    "purchaseAddImageAsync",
+    async(dataStringItemAdd)=>{
+        try{
+            console.log("vvvvvvvvvvvvvvvvv-------------",dataStringItemAdd)
+            const response:any = await purchaseAddImage(dataStringItemAdd) ;
+            console.log("verifcationlast  on sales slice  ----", response)
             return response;
         }
         catch(err){
@@ -62,28 +77,40 @@ export const PurchaseSlice =  createSlice({
     extraReducers:(builder)=>{
         builder
         .addCase(getAllPurchaseSlipAsync.pending, (state)=>{
-            state.status ='loading'
+            state.status ='pending'
         })
         .addCase(getAllPurchaseSlipAsync.fulfilled, (state,action)=>{
-            state.status ='idle',
+            state.status ='fulfilled',
             state.purchaseSlip = action.payload.purchase
             console.log("--------------------------?", state.purchaseSlip)
         })
         .addCase(purchaseQrScanAsync.pending, (state)=>{
-            state.status ='loading'
+            state.status ='pending'
         })
         .addCase(purchaseQrScanAsync.fulfilled, (state,action)=>{
-            state.status ='idle',
-            state.purchaseQrScanData= action.payload.data
+            state.status ='fulfilled';
+            // if(action.payload.success){
+                state.purchaseQrScanData= action.payload.data
+
+            // }
+           
             console.log("--------------------------post scaan", state.purchaseQrScanData)
         })
         .addCase(purchaseVerificationSlipAsync.pending, (state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(purchaseVerificationSlipAsync.fulfilled, (state, action)=>{
-            state.status= 'idle',
-            state. purchaseVerification= action.payload
+            state.status= 'fulfilled',
+            state.purchaseVerification= action.payload
             console.log("purchase V Payload--------------------", state.purchaseVerification)
+        })
+        .addCase(purchaseAddImageAsync.pending, (state)=>{
+            state.status='pending'
+        })
+        .addCase(purchaseAddImageAsync.fulfilled, (state, action)=>{
+            state.status= 'fulfilled',
+            state.purchaseAddImageData= action.payload
+            console.log("purchase V Payload--------------------", state.purchaseAddImageData)
         })
        
 

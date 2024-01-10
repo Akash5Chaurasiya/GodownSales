@@ -9,15 +9,33 @@ import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import Feather from 'react-native-vector-icons/Feather';
 
 
-const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) => {
+const AislePhotoPage = ({
+  navigation,
+  BackName,
+  succesNavigate,
+  capture,
+  transferId,
+  itemId,
+  aisleId
+}: {
+  navigation: any;
+  BackName: string;
+  succesNavigate: string;
+  capture: string;
+  transferId?: string;
+  itemId?: string;
+  aisleId?:any
+}) => {
 
   const { authData }: any = useAuthContext();
   console.log("----------------------today", BackName, succesNavigate, capture)
+
+  console.log("ttttttttttttttttttttttttttttttttttttttt", transferId, itemId)
   const userID = authData.userId
 
   const dispatch = useDispatch();
 
-  const camera = useRef(null);
+  const camera = useRef<any>(null);
 
   const devices = useCameraDevices();
   const device = devices.back;
@@ -28,8 +46,16 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
   const [showPhoto, setShowPhoto] = useState(false);
   const [text, setText] = useState<any>()
   const [textQuantity, setTextQuantity] = useState<any>()
+  const [torchOn, setTorchOn] = useState<any>(false);
+  console.log("Ttttttttttttttttttttttttttttt", torchOn)
+  const flashMode = torchOn ? 'on' : 'off'; 
+    const toggleFlashlight = () => {
+      
+      const newTorchState = !torchOn; // Toggle the torchOn state
+      setTorchOn(newTorchState);
+    };
   const image = useSelector((state: any) => state.purchase.purchaseQrScanData)
-  console.log("image selector-------------------", image)
+  // console.log("image selector-------------------", image)
   const imageString1 = useSelector((state: any) => state.aisle.upploadaisleImage)
   const imageString = imageString1[0];
   console.log("checkkkkeckkeckk", imageString)
@@ -68,9 +94,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
       console.error('Error capturing photo:', error);
     }
   };
-  console.log("imagesource------------------------", ImageSource)
-
-  console.log("text", text)
+  
   const handleConfirm = () => {
     if (ImageSource) {
       const formData = new FormData();
@@ -92,7 +116,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
             Toast.show({
               type: ALERT_TYPE.WARNING,
               title: "warn",
-              textBody: 'Are you sure :)if yess, confirm again',
+              textBody: 'Confirm again:)',
             })
 
 
@@ -140,8 +164,13 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
             textBody: 'Successfully Upload Image',
           })
 
-          navigation.navigate(succesNavigate);
+          // navigation.navigate(succesNavigate,{transferId:transferId, itemId: itemId, image: imageString});
 
+          if (transferId && itemId) {
+            navigation.navigate(succesNavigate, { transferId:transferId, itemId: itemId, image: imageString ,aisleId:aisleId});
+          } else {
+            navigation.navigate(succesNavigate);
+          }
 
         }
         else {
@@ -194,10 +223,9 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
   }
 
   if (!device) {
-    // console.error('Camera device not available.');
-    return null; // or handle the error accordingly
+    return null; 
   }
-  // console.log('Camera device:---------------------------', device);
+
   console.log("ImageSource is hhherer-----------------", `file://${ImageSource}`)
   return (
     <View style={{ flex: 1 }}>
@@ -210,11 +238,26 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
             device={device}
             isActive={showCamera}
             photo={true}
+            torch= {flashMode}
           /></>
       )}
       {!showPhoto && (
         <>
-          <Text style={{ color: "white", fontWeight: '600', justifyContent: 'center', fontSize: 22, margin: '25%' }}>Capture {capture}</Text>
+         <View className='flex flex-row' style={{alignItems:'center', justifyContent:'space-around', marginTop:'30%'}}>
+        <Text style={{ color: "white", fontWeight: '600',  fontSize: 22,  }}>Capture {capture}</Text>
+        <View>
+          <TouchableOpacity onPress={toggleFlashlight } style={{flexDirection:'column', alignItems:'center'}}>
+            <Text style={{color:'white', fontWeight:'500'}}>Flash Light</Text>
+          <Feather
+                name={torchOn ? 'zap' : 'zap-off'}
+             
+                size={22}
+                color={'white'}
+              />
+          </TouchableOpacity>
+        </View>
+        </View>
+          {/* <Text style={{ color: "white", fontWeight: '600', justifyContent: 'center', fontSize: 22, margin: '25%' }}>Capture {capture}</Text> */}
           <View style={styles.confirmButtonContainer}>
 
             <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
@@ -225,19 +268,7 @@ const AislePhotoPage = ({ navigation, BackName, succesNavigate, capture }: any) 
       )}
       {showPhoto && (
         <View style={styles.confirmButtonContainer}>
-          {/* <TextInput
-          style={{
-            borderColor: 'gray',
-            borderRadius: 8,
-            borderWidth: 1, width: '70%', color: 'black', margin: '3%',
-          }}
-          placeholder="Enter Reason"
-          value={text}
-          onChangeText={(text) => setText(text)}
-
-
-
-        /> */}
+     
           <View style={styles.buttonRow}>
             <TouchableOpacity
               onPress={handleRetake}

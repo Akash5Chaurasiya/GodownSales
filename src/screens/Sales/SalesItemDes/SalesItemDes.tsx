@@ -22,6 +22,7 @@ const SalesItemDes = ({navigation}:any) => {
   code={dataFromApi?.itemData[0]?.item?.HSNCode}
    navigation={navigation}
     screenName="SalesAisleQr"
+    backName ="Sales"
   
   />
     

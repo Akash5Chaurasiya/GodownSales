@@ -110,7 +110,7 @@ export const AisleSlice = createSlice({
            
         })
         .addCase(assignAlisleAsync.pending,(state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(assignAlisleAsync.fulfilled,(state, action)=>{
             state.status='fulfilled',
@@ -118,18 +118,18 @@ export const AisleSlice = createSlice({
            console.log("on assignslice", state.assignaisle)   
         })
         .addCase(imageUploadAisleAsync.pending,(state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(imageUploadAisleAsync.fulfilled,(state, action)=>{
-            state.status='idle',
+            state.status='fulfilled',
            state.upploadaisleImage = action.payload
            console.log("responsee--------------------------------", state.upploadaisleImage)
         })
         .addCase(addAisleImageAsync.pending,(state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(addAisleImageAsync.fulfilled,(state, action)=>{
-            state.status='idle',
+            state.status='fulfilled',
            state.addImageaisle = action.payload
            console.log("on assignslice", state.addImageaisle)
         })

@@ -25,7 +25,7 @@ export const ShelfSlice = createSlice({
     extraReducers:(builder)=>{
         builder
         .addCase(getAllShelfAsync.pending,(state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(getAllShelfAsync.fulfilled,(state, action)=>{
             state.status='fulfilled',

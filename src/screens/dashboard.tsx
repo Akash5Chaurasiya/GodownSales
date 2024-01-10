@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '35%',
         borderRadius: 50,
-        elevation: 4
+        elevation: 4,
+        
 
     },
     Sales: {
@@ -114,11 +115,13 @@ const styles = StyleSheet.create({
     },
     text: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '500',
         fontSize: 14,
         lineHeight: 19.46,
         textAlignVertical: 'center',
         textAlign: 'center',
-        marginLeft: 8
+        marginLeft: 8,
+        color:'black',
+        
     }
 })

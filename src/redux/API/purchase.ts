@@ -1,5 +1,5 @@
 import axios from "axios";
-import {purchaserSlipApiPath, purchaseQrScanApiPath, purchaseVerificationApiPath} from '../apiRoutes'
+import {purchaserSlipApiPath, purchaseQrScanApiPath, purchaseVerificationApiPath,purchaseAddImageApiPath} from '../apiRoutes'
 
 export const getAllPurchaseSlip = async()=>{
 
@@ -32,11 +32,11 @@ export const purchaseQrScan = async(datacode:any)=>{
     }
 }
 
-export const purchaseVerificationSlip = async(dataString:any)=>{
-    
+export const purchaseVerificationSlip = async(dataStringItemAdd:any)=>{
+ console.log("parammm", dataStringItemAdd)
     try{
-        const {data} = await axios.post(`${purchaseVerificationApiPath}/${dataString.purchaseSlipId}`, 
-         { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleId:dataString.aisleID}
+        const {data} = await axios.post(`${purchaseVerificationApiPath}/${dataStringItemAdd.purchaseSlipId}`, 
+         {  quantity:dataStringItemAdd.textQuantity, addedBy:dataStringItemAdd.userID, aisleId:dataStringItemAdd.aisleID}
         ,{
             withCredentials:true
         })
@@ -48,3 +48,19 @@ export const purchaseVerificationSlip = async(dataString:any)=>{
         return err;
     }
 }
+export const purchaseAddImage = async(dataStringItemAdd:any)=>{
+    console.log("parammm--r-r-", dataStringItemAdd)
+       try{
+           const {data} = await axios.post(`${purchaseAddImageApiPath}/${dataStringItemAdd.purchaseSlipId}`, 
+            {  image:dataStringItemAdd.imageString, aisle:dataStringItemAdd.aisleID}
+           ,{
+               withCredentials:true
+           })
+           console.log("purchase last vvvv ", data)
+           return data
+   
+       }
+       catch(err){
+           return err;
+       }
+   }

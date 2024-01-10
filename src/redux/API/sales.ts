@@ -1,5 +1,5 @@
 import axios from "axios";
-import {SalesSlipApiPath, SalesQrScanApiPath, SalesVerificationApiPath} from '../apiRoutes'
+import {SalesSlipApiPath, SalesQrScanApiPath, SalesVerificationApiPath, SalesRemoveItemApiPath} from '../apiRoutes'
 
 export const getAllSalesSlip = async()=>{
 
@@ -33,11 +33,29 @@ console.log("data", barcodeData)
 //  params m -> salesslip ki id 
 // asisle id = aisle id 
 
-export const SalesVerificationSlip = async(dataString:any)=>{
+export const SalesRemoveItem = async(dataString:any)=>{
     
         try{
-            const {data} = await axios.post(`${SalesVerificationApiPath}/${dataString.salesSlipId}`, 
-             { image: dataString.imageString, quantity:dataString.textQuantity, addedBy:dataString.userID, aisleId:dataString.aisleID}
+            const {data} = await axios.post(`${SalesRemoveItemApiPath}/${dataString.salesSlipId}`, 
+             {  quantity:dataString.textQuantity, addedBy:dataString.userID, aisleId:dataString.aisleID}
+            ,{
+                withCredentials:true
+            })
+            console.log("verification sales ", data)
+            return data
+    
+        }
+        catch(err){
+            return err;
+        }
+    }
+    //sales remove item 
+
+    export const SalesVerificationSlip = async(dataString:any)=>{
+      console.log("objjjj", dataString)
+        try{
+            const {data} = await axios.post(`${SalesVerificationApiPath}/${dataString.SalesSlipId}`, 
+             { image: dataString.imageString,  addedBy:dataString.userID, aisle:dataString.aisleID}
             ,{
                 withCredentials:true
             })

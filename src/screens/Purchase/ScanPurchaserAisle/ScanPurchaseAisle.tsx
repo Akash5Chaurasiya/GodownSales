@@ -21,7 +21,7 @@ interface CamProps {
 const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
   const devices = useCameraDevices();
   const device = devices.back;
-  const [torchOn, setTorchOn] = useState(false);
+  
   const [isFocused, setIsFocused] = useState(true); 
   // const route: any = useRoute();
   // const id:any = route.params
@@ -41,6 +41,16 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isScanned, setIsScanned] = useState(false);
   const dispatch = useDispatch();
+  const [torchOn, setTorchOn] = useState<any>(false);
+  // console.log("Ttttttttttttttttttttttttttttt", torchOn)
+  const flashMode = torchOn ? 'on' : 'off'; 
+    const toggleFlashlight = () => {
+      
+      const newTorchState = !torchOn; // Toggle the torchOn state
+      setTorchOn(newTorchState);
+    };
+  
+  
 
 
   useEffect(() => {
@@ -160,13 +170,27 @@ const ScanPurchaseAisle: React.FC<CamProps> = ({ navigation,route }) => {
           frameProcessorFps="auto"
           audio={false}
           enableZoomGesture
+          torch= {flashMode}
         />
   {/* <View style={{justifyContent:'center', alignItems:'center',top:'20%' }}>
 
 
 <Text style={{color:'white', fontSize:25, fontWeight:'800', }}>Scan QR Code Of Purchase</Text>
 </View> */}
-
+  <View className='flex flex-row' style={{alignItems:'center', justifyContent:'space-around', marginTop:'30%',zIndex: 2000}}>
+        <Text style={{ color: "white", fontWeight: '600',  fontSize: 22, zIndex: 2000 }}>Scan QR Code Of Aisle </Text>
+        <View >
+          <TouchableOpacity onPress={toggleFlashlight } style={{flexDirection:'column', alignItems:'center',zIndex: 2000,}}>
+            <Text style={{color:'white', fontWeight:'500'}}>Flash Light</Text>
+          <Feather
+                name={torchOn ? 'zap' : 'zap-off'}
+             
+                size={22}
+                color={'white'}
+              />
+          </TouchableOpacity>
+        </View>
+        </View>
       
         <RNHoleView
           holes={[
@@ -196,6 +220,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex:1000
   },
   corner: {
     position: 'absolute',

@@ -1,7 +1,7 @@
 
 
 import axios from "axios";
-import {ReconcilitionApiPath} from '../apiRoutes'
+import {ReconcilitionApiPath, reconUploadApiPath} from '../apiRoutes'
 
 export const  getAllRecon = async ()=>{
 
@@ -20,6 +20,21 @@ export const  getAllRecon = async ()=>{
 
 
 
+export const  reconUpdateItems = async (apiPayloadData:any)=>{
+
+    try{
+        console.log("on api recon item", apiPayloadData)
+        const {data} = await axios.patch(`${reconUploadApiPath}/${apiPayloadData.reconID}`,apiPayloadData.apiPayload,{
+            withCredentials:true
+        })
+        console.log("data after uploadedd of reconsilation item  ", data)
+        return data
+
+    }
+    catch(err){
+        return err;
+    }
+}
 
 
 

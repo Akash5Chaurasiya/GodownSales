@@ -1,13 +1,14 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {getAllSalesSlip, SalesQrScanSlip, SalesVerificationSlip} from '../API/sales'
+import {getAllSalesSlip, SalesQrScanSlip, SalesVerificationSlip, SalesRemoveItem} from '../API/sales'
 
 
 
 const initialState ={
     salesSlip:[],
-    SalesQrScan:[],
+    SalesQrScan:{},
     SalesVerification:[],
+    SalesRemoveItem:[],
     status:'idle',
 }
 
@@ -53,6 +54,20 @@ export const SalesVerificationSlipAsync:any = createAsyncThunk(
         }
     }
 )
+export const SalesRemoveItemAsync:any = createAsyncThunk(
+    "SalesRemoveItemAsync",
+    async(dataString)=>{
+        try{
+            console.log("vvvvvvvvvvvvvvvvv-------------",dataString)
+            const response:any = await SalesRemoveItem(dataString) ;
+            console.log("remove item  on sales slice  ----", response)
+            return response;
+        }
+        catch(err){
+            return err
+        }
+    }
+)
 
 export const SalesSlice = createSlice({
     name:'SalesSlice',
@@ -61,26 +76,34 @@ export const SalesSlice = createSlice({
     extraReducers:(builder)=>{
         builder
         .addCase(getAllSalesSlipAsync.pending, (state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(getAllSalesSlipAsync.fulfilled, (state, action)=>{
-            state.status= 'idle',
+            state.status= 'fulfilled',
             state.salesSlip= action.payload.sales
         })
         .addCase(SalesQrScanSlipAsync.pending, (state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(SalesQrScanSlipAsync.fulfilled, (state, action)=>{
-            state.status= 'idle',
+            state.status= 'fulfilled',
             state.SalesQrScan= action.payload.data
             console.log("saleqrrrscan--------------------", state.SalesQrScan)
         })
         .addCase(SalesVerificationSlipAsync.pending, (state)=>{
-            state.status='loading'
+            state.status='pending'
         })
         .addCase(SalesVerificationSlipAsync.fulfilled, (state, action)=>{
-            state.status= 'idle',
+            state.status= 'fulfilled',
             state.SalesVerification= action.payload
+            // console.log("ssalaesV Payload--------------------", state.SalesQrScan)
+        })
+        .addCase(SalesRemoveItemAsync.pending, (state)=>{
+            state.status='pending'
+        })
+        .addCase(SalesRemoveItemAsync.fulfilled, (state, action)=>{
+            state.status= 'fulfilled',
+            state.SalesRemoveItem= action.payload
             // console.log("ssalaesV Payload--------------------", state.SalesQrScan)
         })
     }

@@ -16,7 +16,7 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   const imageData = data
 
   console.log("coming imagedata", data, aisleCode, shelfCode,)
-  const camera = useRef(null);
+  const camera = useRef<any>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   const devices = useCameraDevices();
@@ -25,6 +25,15 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
   const [showCamera, setShowCamera] = useState<any>(true);
   const [showPhoto, setShowPhoto] = useState(false);
   const [text, setText] = useState<any>()
+  const [torchOn, setTorchOn] = useState<any>(false);
+  // console.log("Ttttttttttttttttttttttttttttt", torchOn)
+  const flashMode = torchOn ? 'on' : 'off'; 
+    const toggleFlashlight = () => {
+      
+      const newTorchState = !torchOn; // Toggle the torchOn state
+      setTorchOn(newTorchState);
+    };
+
   const image = useSelector((state: any) => state.purchase.purchaseQrScanData)
   console.log("image selector-------------------", image)
   const imageString1= useSelector((state: any) => state.aisle.upploadaisleImage)
@@ -187,14 +196,31 @@ const AssignAisleCamera = ({ navigation, route }: any) => {
           device={device}
           isActive={showCamera}
           photo={true}
+          torch= {flashMode}
         />
       )}
       {!showPhoto && (
+        <>
+         <View className='flex flex-row' style={{alignItems:'center', justifyContent:'space-around', marginTop:'30%'}}>
+         <Text style={{ color: "white", fontWeight: '600',  fontSize: 22,  }}>Capture Aisle Photo </Text>
+         <View >
+           <TouchableOpacity onPress={toggleFlashlight } style={{flexDirection:'column', alignItems:'center'}}>
+             <Text style={{color:'white', fontWeight:'500'}}>Flash Light</Text>
+           <Feather
+                 name={torchOn ? 'zap' : 'zap-off'}
+              
+                 size={22}
+                 color={'white'}
+               />
+           </TouchableOpacity>
+         </View>
+         </View>
         <View style={styles.confirmButtonContainer}>
           <TouchableOpacity onPress={capturePhoto} style={styles.confirmButton}>
             <Text style={styles.confirmButtonText}>Capture Photo</Text>
           </TouchableOpacity>
         </View>
+        </>
       )}
       {showPhoto && (
         <View style={styles.confirmButtonContainer}>

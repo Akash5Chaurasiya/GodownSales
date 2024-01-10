@@ -5,6 +5,7 @@ import PurchaseSlice from "./Slice/purchaseSlice";
 import AisleSlice from "./Slice/aisleSlice";
 import  SalesSlice  from "./Slice/sales";
 import ReconciliationSlice from './Slice/reconciliation'
+import Transferlice  from "./Slice/transfer";
 
 export const store=configureStore({
     reducer:{
@@ -12,6 +13,8 @@ export const store=configureStore({
        aisle:AisleSlice,
        purchase:PurchaseSlice,
        sales: SalesSlice,
-       reconciliation: ReconciliationSlice
+       reconciliation: ReconciliationSlice,
+       transfer: Transferlice
+       
     }
 })

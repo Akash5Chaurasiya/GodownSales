@@ -12,9 +12,9 @@ const SalesAisleQr = ({navigation}:any) => {
   const dispatch = useDispatch();
   
   const handleBarcodeScanned = (barcode: string) => {
-    // Customize the dispatch action and logic for Screen1
-  // --> need  dispatch(purchaseQrScanAsync({ data: barcode }));
+ 
   const barcodeData = barcode;
+  console.log("aisle barcode",barcode)
   dispatch(scanAlisleAsync(barcodeData)).then((res:any)=>{
     if(res.payload.status){
      Toast.show({

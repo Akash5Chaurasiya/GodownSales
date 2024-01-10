@@ -1,15 +1,16 @@
 import { StyleSheet, Text, View, Image , TouchableOpacity } from 'react-native'
 import React from 'react'
 import Navbar from '../navbar/Navbar'
+import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
 export interface RTItem {
-    time:any, status:any, godownName:any, Number:any , itemName:any , qty:any , price:any, code:any,screenName: string, navigation:any
+    time:any, status:any, godownName:any, Number:any , itemName:any , qty:any , price:any, code:any,screenName: string, navigation:any,backName:any
 }
 
 
 export default function  DescriptionPage(props: RTItem) {
 
-    const { time, status , godownName, Number , itemName , qty , price, code, navigation, screenName} = props
+    const { time, status , godownName, Number , itemName , qty , price, code, navigation, screenName, backName} = props
     console.log("scennename", screenName)
     const strinName:string = screenName
 
@@ -27,7 +28,21 @@ export default function  DescriptionPage(props: RTItem) {
           formattedTime,
         };
       };
-    
+      const handleOk =()=>{
+        console.warn("ccccc")
+        if(status=== 'pending'){
+          navigation.navigate(strinName)
+        }
+        else{
+          Dialog.show({
+            type: ALERT_TYPE.WARNING,
+            title: "Warn",
+            textBody:'No more quantity present :)',
+          })
+          navigation.navigate(backName)
+
+        }
+      }
       const { formattedDate, formattedTime } = formatDate(time);
   return (
     <View style={styles.card}>
@@ -46,7 +61,7 @@ export default function  DescriptionPage(props: RTItem) {
         </View>
         <Text style={{ fontSize: 14, fontWeight: '500', color: '#172B4D' }}>{formattedTime}</Text>
 
-        <Text className='ml-2 bg-blue-200 w-10 h-5 rounded-md font-extrabold text-black text-center'>IRON</Text>
+        {/* <Text className='ml-2 bg-blue-200 w-10 h-5 rounded-md font-extrabold text-black text-center'>IRON</Text> */}
 
 
       </View>
@@ -58,7 +73,7 @@ export default function  DescriptionPage(props: RTItem) {
         </View>
         <View className='flex flex-col justify-center'>
           <Text className='text- text-base font-semibold text-[#005D7F]'>Bill Number</Text>
-          <Text className='text- text-base font-normal text-[#172B4D]'>00000000</Text>
+          <Text className='text- text-base font-normal text-[#172B4D]'>--</Text>
         </View>
       </View>
 
@@ -89,7 +104,7 @@ export default function  DescriptionPage(props: RTItem) {
           </View>
           <View>
             <Text className='text- text-base font-bold text-[#005D7F]'>Price</Text>
-            <Text className='text- text-base font-normal text-[#172B4D]'>{price}</Text>
+            <Text className='text- text-base font-normal text-[#172B4D]'>{price.toFixed(2)}</Text>
           </View>
           </View>
         </TouchableOpacity>
@@ -100,7 +115,7 @@ export default function  DescriptionPage(props: RTItem) {
 
     </View>
     <View style={{ flexDirection: 'column', alignItems: 'center' }} className=' gap-2'>
-      <TouchableOpacity style={{ width: '90%', backgroundColor: '#005D7F', padding: '4%', borderRadius: 9 }} onPress={()=>navigation.navigate(strinName)}>
+      <TouchableOpacity style={{ width: '90%', backgroundColor: '#005D7F', padding: '4%', borderRadius: 9 }} onPress={handleOk}>
         <Text style={{ color: '#fff', fontWeight: '600', fontSize: 20, textAlign: 'center' }}>Unload -</Text>
       </TouchableOpacity>
       {/* <TouchableOpacity style={{ width: '90%', backgroundColor: '#fff', padding: '4%', borderRadius: 9, borderWidth: 1, borderColor: '#005D7F' }}>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, SafeAreaView, Image, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, FlatList, SafeAreaView, Image, TouchableOpacity, TextInput, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import FlatlistComp from '../../components/FlatlistComp/FlatlistComp'
@@ -7,15 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RadioButton } from 'react-native-paper';
 import { getAllSalesSlipAsync } from '../../redux/Slice/sales';
 
-const Sales = ({navigation}:any) => {
+const Sales = ({ navigation }: any) => {
   const dispatch = useDispatch();
+  const [refreshing, setRefreshing] = useState(false);
   const [selected, setSelected] = React.useState(false);
   const [show, setShow] = useState(false);
   const [text, setText] = React.useState<string | undefined>();
   const [selectedItem, setSelectedItem] = useState(null);
-  useEffect(() => {
-    // setShow(true);
-  }, []);
+
 
 
   const photo = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
@@ -24,18 +23,18 @@ const Sales = ({navigation}:any) => {
     dispatch(getAllSalesSlipAsync());
   }, [])
 
-  const pendingSalesList  = useSelector((state:any)=>state.sales.salesSlip)
-  const salesList = pendingSalesList?.filter((sales :any)=> sales.status ==='pending')
-  
+  const pendingSalesList = useSelector((state: any) => state.sales.salesSlip)
+  const salesList = pendingSalesList?.filter((sales: any) => sales.status === 'pending')
+
   console.log("----------------------today", pendingSalesList)
 
-  const salesNumbers : any=[];
-  salesList?.forEach((sales:any , index:any)=>{
-    const salesNumber = sales.salesOrder;
-    salesNumbers.push({salesNumber});
+  const salesNumbers: any = [];
+  salesList?.forEach((sales: any, index: any) => {
+    // const salesNumber = sales.salesOrder._id;
+    const salesNumber = sales?._id;
+    salesNumbers.push({ salesNumber });
   })
-console.log("salesnummm", salesNumbers)
-
+  console.log("salesnummm", salesNumbers)
 
   const handleSubmit = () => {
     setShow(false);
@@ -44,8 +43,8 @@ console.log("salesnummm", salesNumbers)
 
   const textstring = text?.toString();
   const searchres = salesNumbers?.filter((sales: any) => {
-    const includesText = sales.salesNumber.includes(textstring);
-  
+    const includesText = sales?.salesNumber?.includes(textstring);
+
     return includesText;
   });
 
@@ -59,16 +58,31 @@ console.log("salesnummm", salesNumbers)
 
   const filteredData = salesList?.filter((sales: any) => {
     // Check if the purchaseOrder array includes the selected item
-    return sales?.salesOrder?.includes(selectedItem);
+    //  const saleOrderId=  sales?.salesOrder?._id;
+    const saleOrderId = sales?._id;
+    return saleOrderId === selectedItem
   });
   const dataList = selectedItem && text ? filteredData : salesList;
   console.log("Filtered Data:", filteredData);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+     await dispatch(getAllSalesSlipAsync())
+    // await completed
+    setRefreshing(false);
+};
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
 
       <Navbar />
       <View>
-        <Text className='text-center text-xl font-extrabold m-5 text-black'>Choose Sales Number</Text>
+
+        <View className='flex flex-row justify-around ' style={{ alignItems: 'center' }}>
+          <Text className='text-center text-xl font-extrabold m-5 text-black'>Choose Sales Number</Text>
+          <TouchableOpacity style={{ borderRadius: 9, borderWidth: 0.5, marginRight: '3%', width: '40%', height: '50%', padding: '2%', backgroundColor: 'green' }} onPress={() => navigation.navigate("SalesVSlip")} ><Text className='font-semibold text-[#ffffff] text-sm'>Verify Complete Slip -></Text></TouchableOpacity>
+
+        </View>
         <View style={{ marginHorizontal: '4%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
           {/* <SearchComponent /> */}
           <View
@@ -100,6 +114,7 @@ console.log("salesnummm", salesNumbers)
               style={styles.input}
               onSubmitEditing={handleSubmit}
             />
+            
             {text && (
               <TouchableOpacity
                 onPress={() => {
@@ -161,15 +176,18 @@ console.log("salesnummm", salesNumbers)
             style={{ maxHeight: 550 }}
             data={dataList}
             keyExtractor={(item, index) => index.toString()}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             renderItem={({ item }) => (
 
               <FlatlistComp
                 photo={photo}
                 qrCode={item.qrCode}
-
+                numberName={"Sales Id"}
                 dateTime={item.createdAt}
                 status={item.status}
-                productNumber={item.salesOrder}
+                productNumber={item._id}
               // productName={item.productName}
 
               />
@@ -221,7 +239,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontFamily: 'Inter-Regular',
     padding: 0,
-    color:'black'
+    color: 'black'
   },
   searchAssistContainer: {
     backgroundColor: 'white',
